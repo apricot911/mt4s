@@ -1,0 +1,12 @@
+[submodule "public/assets/plugins/Chart.js"]
+	path = public/assets/plugins/Chart.js
+	url = git@github.com:nnnick/Chart.js.git
+[submodule "public/assets/plugins/bootstrap-ajax-typeahead"]
+	path = public/assets/plugins/bootstrap-ajax-typeahead
+	url = git@github.com:biggora/bootstrap-ajax-typeahead.git
+[submodule "public/assets/plugins/easy-pie-chart"]
+	path = public/assets/plugins/easy-pie-chart
+	url = git@github.com:rendro/easy-pie-chart.git
+[submodule "public/assets/plugins/jquery-plugin-circliful"]
+	path = public/assets/plugins/jquery-plugin-circliful
+	url = git@github.com:pguso/jquery-plugin-circliful.git
