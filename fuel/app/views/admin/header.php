@@ -14,6 +14,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <?php
         echo Asset::css(array('bootstrap.css', 'bootstrap-theme.css'));
+        echo Asset::js(array('openstack_helper.js'));
         ?>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
         <script src="<?php echo Asset::get_file('bootstrap-typeahead.js', 'plugins', 'bootstrap-ajax-typeahead/js');?>"></script>
