@@ -6,18 +6,24 @@
  * Time: 14:25
  */
 
+require APPPATH . 'vendor/mt4/tokenHelper.php';
+
 class Controller_Admin extends Controller_Template{
 
     public $template = "admin/template";
     public function before(){
         parent::before();
+        Session::destroy();
         Session::instance();
+        self::fetchToken();
+        echo \mt4\TokenHelper::getPublicUrl("nova", Session::get("openstack"));
+        $this->template->token = Session::get('token');
+        $this->template->tenantid = Session::get('tenantid');
         Asset::add_path('assets/plugins', 'plugins');
         $this->template->header = View::forge('admin/header');
         $this->template->navbar = View::forge('admin/navigation');
        // echo "test";
-        self::fetchToken();
-        echo Session::get("token");
+
 
     }
 
@@ -41,6 +47,9 @@ class Controller_Admin extends Controller_Template{
         $this->template->content = View::forge('admin/index');
     }
 
+    /**
+     * OpenStackのtokenを取得する
+     */
     public function fetchToken(){
         if ((new DateTime(Session::get('token_expire', 'now')))->getTimestamp() < (new Datetime('now'))->getTimestamp()){
             return;
@@ -61,7 +70,9 @@ class Controller_Admin extends Controller_Template{
         ));
         $result = curl_exec($ch);
         $openstack_token = json_decode($result, true);
+        Session::set("openstack", $openstack_token);
         Session::set("token", $openstack_token['access']['token']['id']);
         Session::set("token_expire", $openstack_token['access']['token']['expires']);
+        Session::set("tenantid", $openstack_token['access']['token']['tenant']['id']);
     }
 }
