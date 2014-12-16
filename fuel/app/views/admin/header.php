@@ -18,6 +18,7 @@
         ?>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
         <script src="<?php echo Asset::get_file('bootstrap-typeahead.js', 'plugins', 'bootstrap-ajax-typeahead/js');?>"></script>
+        <script src="<?php echo Asset::get_file('underscore-min.js', 'plugins', 'underscore');?>"></script>
         <title>index</title>
         <style type="text/css">
             body{

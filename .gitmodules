@@ -10,3 +10,6 @@
 [submodule "public/assets/plugins/jquery-plugin-circliful"]
 	path = public/assets/plugins/jquery-plugin-circliful
 	url = git@github.com:pguso/jquery-plugin-circliful.git
+[submodule "public/assets/plugins/underscore"]
+	path = public/assets/plugins/underscore
+	url = git@github.com:jashkenas/underscore.git
