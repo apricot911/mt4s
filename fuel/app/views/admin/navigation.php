@@ -7,7 +7,7 @@
  */
 
 ?>
-<nav class="nav navbar-default navbar-fixed-top" role="navigation">
+<nav class="nav navbar-default navbar-custom navbar-fixed-top" role="navigation">
     <div class="container">
         <div class="navbar-header">
             <a class="navbar-brand" href="/admin/">

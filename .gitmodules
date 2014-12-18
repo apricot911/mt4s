@@ -13,3 +13,6 @@
 [submodule "public/assets/plugins/underscore"]
 	path = public/assets/plugins/underscore
 	url = git@github.com:jashkenas/underscore.git
+[submodule "public/assets/plugins/bootflat.github.io"]
+	path = public/assets/plugins/bootflat.github.io
+	url = https://github.com/bootflat/bootflat.github.io.git
