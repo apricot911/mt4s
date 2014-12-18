@@ -124,7 +124,7 @@
                             <p>3年B組　にゃんだふる</p>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row" id="instance_list">
                         <div class="col-xs-3">
                             <div class="instance_box">
                                 <div>
@@ -194,6 +194,18 @@
 <div data-spy="affix" data-offset-top="60" data-offset-bottom="200">
     ...
 </div>
+<script id="instance_tmpl" type="text/template">
+    <div class="col-xs-3">
+        <div class="instance_box">
+            <div>
+                <span class="status text-center glyphicon glyphicon-<%= status %>"></span>
+                <span class="info"><%= ipaddress%></span>
+
+                <div class="bar"><%= instancename %></div>
+            </div>
+        </div>
+    </div>
+</script>
 <script type="text/javascript">
 //    $('.chart').easyPieChart({
 //        easing: 'easeOutBounce',
@@ -205,7 +217,32 @@
 
 
     $(function(){
-        
+        //fetch servers
+        $.ajax({
+            url: '/openstack/sendRequest.json',
+            type: 'post',
+            data: '{"component": "nova", "path": "/servers", "method": "get"}'
+        }).done(function(data){
+            if(data != null){
+                var list = $('#instance_list');
+                list.empty();
+                data['servers'].forEach(function(e){
+                    var name = e.name;
+                    var template = _.template($('#instance_tmpl').html());
+                    var instance = $(template({status: 'play', ipaddress: '10', instancename: name}));
+
+                    list.append(instance);
+                });
+                $('.instance_box').click(function(){
+                    if($(this).is('.select')){
+                        $(this).removeClass('select');
+                    }else{
+                        $(this).addClass("select");
+                    }
+                });
+            }
+        });
+
         $('.instance_box').click(function(){
             if($(this).is('.select')){
                 $(this).removeClass('select');

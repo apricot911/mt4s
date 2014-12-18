@@ -39,12 +39,10 @@ class Controller_Openstack extends Controller_Rest{
      * @return mixed
      */
     public function post_sendRequest(){
-        $request_data = Input::json("data");
-
-        $component  = $request_data['component'];
-        $path       = $request_data['path'];
-        $method     = $request_data['method'];
-        $data       = isset($request_data['data']) ? $request_data['data'] : "";
+        $component  = Input::json('component');
+        $path       = Input::json('path');
+        $method     = Input::json('method');
+        $data       = Input::json('data', "");
         $public_url = self::getPublicUrl($component);
         if(empty($public_url)){
             return "error";
@@ -119,10 +117,17 @@ class Controller_Openstack extends Controller_Rest{
         $openstackObj = Session::get("openstack");
         $catalogs =  $openstackObj['access']['serviceCatalog'];
 
-        $catalog = array_filter($catalogs, function($e) use ($compornentName){
+        $findCatalog = array_filter($catalogs, function($e) use ($compornentName){
             return $e['name'] ==  $compornentName;
-        })[0];
+        });
+        if(count($findCatalog) == 1){
+            return $findCatalog[0]['endpoints'][0]['publicURL'];
+        }else{
+            echo "findCatalog : {$compornentName}";
+            var_dump($findCatalog);
+            return null;
+        }
         //var_dump($catalog['endpoints']);
-        return $catalog['endpoints'][0]['publicURL'];
+
     }
 }
