@@ -15,7 +15,7 @@ class Controller_Openstack extends Controller_Rest{
         parent::before();
         Session::destroy();
         Session::instance();
-        self::fetchToken();
+        self::fetch_token();
        // echo \mt4\TokenHelper::getPublicUrl("nova", Session::get("openstack"));
 //        $this->template->token = Session::get('token');
 //        $this->template->tenantid = Session::get('tenantid');
@@ -38,33 +38,27 @@ class Controller_Openstack extends Controller_Rest{
      * data : '{"data": {"component":"nova", "path": "/servers", "data": ""}}'
      * @return mixed
      */
-    public function post_sendRequest(){
+    public function post_send_request(){
         $component  = Input::json('component');
         $path       = Input::json('path');
         $method     = Input::json('method');
         $data       = Input::json('data', "");
-        $public_url = self::getPublicUrl($component);
+        $public_url = self::get_public_url($component);
         if(empty($public_url)){
             return "error";
         }
         $url        = $public_url . $path;
-        $result     = self::sendCurlRequest($url, $method, $data);
+        $result     = self::send_curl_request($url, $method, $data);
 //        echo "<br>" . $url . "<br>";
 //        var_dump($result);
 //        return "";
         return $this->response(json_decode($result));
     }
 
-    public function action_serverList(){
-        $nova_public_url = self::getPublicUrl("nova");
-        $result = self::sendCurlRequest($nova_public_url . "/servers", "GET");
-        return $this->response(json_decode($result));
-    }
-
     /**
      * OpenStackのtokenを取得する
      */
-    public function fetchToken(){
+    public function fetch_token(){
         if ((new DateTime(Session::get('token_expire', 'now')))->getTimestamp() < (new Datetime('now'))->getTimestamp()){
             return;
         }
@@ -97,7 +91,7 @@ class Controller_Openstack extends Controller_Rest{
      * @param string $data
      * @return mixed
      */
-    public function sendCurlRequest($url, $method, $data = ""){
+    public function send_curl_request($url, $method, $data = ""){
         $token = Session::get('token');
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, mb_strtoupper($method));
@@ -113,18 +107,18 @@ class Controller_Openstack extends Controller_Rest{
     }
 
 
-    public function getPublicUrl($compornentName){
-        $openstackObj = Session::get("openstack");
-        $catalogs =  $openstackObj['access']['serviceCatalog'];
+    private function get_public_url($compornent_name){
+        $openstack_obj = Session::get("openstack");
+        $catalogs =  $openstack_obj['access']['serviceCatalog'];
 
-        $findCatalog = array_filter($catalogs, function($e) use ($compornentName){
-            return $e['name'] ==  $compornentName;
+        $find_catalog = array_filter($catalogs, function($e) use ($compornent_name){
+            return $e['name'] ==  $compornent_name;
         });
-        if(count($findCatalog) == 1){
-            return $findCatalog[0]['endpoints'][0]['publicURL'];
+        if(count($find_catalog) == 1){
+            return $find_catalog[0]['endpoints'][0]['publicURL'];
         }else{
-            echo "findCatalog : {$compornentName}";
-            var_dump($findCatalog);
+            echo "findCatalog : {$compornent_name}";
+            var_dump($find_catalog);
             return null;
         }
         //var_dump($catalog['endpoints']);

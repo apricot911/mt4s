@@ -219,7 +219,7 @@
     $(function(){
         //fetch servers
         $.ajax({
-            url: '/openstack/sendRequest.json',
+            url: '/openstack/send_request.json',
             type: 'post',
             data: '{"component": "nova", "path": "/servers", "method": "get"}'
         }).done(function(data){

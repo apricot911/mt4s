@@ -14,12 +14,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <?php
         echo Asset::css(array('bootstrap.css'));
-        echo Asset::js(array('openstack_helper.js'));
         ?>
         <link type="text/css" rel="stylesheet" href="<?php echo Asset::get_file('bootflat.css', 'plugins', 'bootflat.github.io/bootflat/css') ?>"/>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
         <script src="<?php echo Asset::get_file('bootstrap-typeahead.js', 'plugins', 'bootstrap-ajax-typeahead/js');?>"></script>
         <script src="<?php echo Asset::get_file('underscore-min.js', 'plugins', 'underscore');?>"></script>
+        <?php echo Asset::js(array('openstack_helper.js', 'bootstrap.js')); ?>
         <title>index</title>
         <style type="text/css">
             body{
