@@ -5,8 +5,6 @@
  * Date: 14/11/18
  * Time: 15:22
  */
-
-require 'header.php';
 ?>
 
 <div class="container">
@@ -24,7 +22,7 @@ require 'header.php';
             </div>
             <div class="row">
                 <div class="col-xs-12">
-                    <table class="table">
+                    <table id="course_list" class="table">
                         <thead>
                             <tr>
                                 <th class="col-xs-4">名前</th>
@@ -63,6 +61,94 @@ require 'header.php';
         </div>
     </div>
 </div>
-<div data-spy="affix" data-offset-top="60" data-offset-bottom="200">
-    ...
+<?php
+    //echo is_array($room_list);
+
+?>
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">新規授業作成</h4>
+            </div>
+            <div class="modal-body">
+                <p class="help-text">新規の授業を作成します</p>
+                <form>
+                    <div class="form-group">
+                        <label for="course-name" class="control-label">授業名</label>
+                        <input type="text" class="form-control" id="course-name" name="course_name">
+                    </div>
+                    <div class="form-group">
+                        <label for="teacher-id" class="control-label">教員</label>
+                        <select id="teacher-id" class="form-control" name="teacher_id">
+                            <?php
+                                foreach($teacher_list as $teacher):
+                            ?>
+                                <option value="<?php echo $teacher['user_id']; ?>"><?php echo $teacher['name'] ?></option>
+                            <?php
+                                endforeach;
+                            ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="room-name">教室</label>
+                        <select class="form-control" name="room_id" id="room-name">
+                            <?php
+                                foreach($room_list as $room):
+                            ?>
+                            <option value="<?php echo $room['id']; ?>"><?php echo $room['name']; ?></option>
+                            <?php
+                                endforeach;
+                            ?>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
 </div>
+<script type="text/temaplte" id="course_row_tmpl">
+    <tr>
+        <td><a href="course/detail.php?id=<%=course_id%>"><%=course_name%></a></td>
+        <td><%=teacher_name%></td>
+        <td><%=room_name%></td>
+        <td><%=enabled%></td>
+        <td><button class="btn btn-danger">編集</button></td>
+    </tr>
+</script>
+<script type="text/javascript">
+    $(function(){
+        "use strict";
+        var view = {
+            course_list: $('#course_list'),
+            course_row_tmpl: _.template($('#course_row_tmpl').html()),
+            fetch   : function(){
+                var self = this;
+                var tbody = $('tbody', self.course_list);
+                tbody.empty();
+                $.ajax({
+                    url: '/api/course/fetch.json'
+                }).done(function(data){
+                    if(data.status != -1){
+                        _(data).each(function(row){
+                            tbody.append(self.course_row_tmpl(row));
+                        });
+                    }
+                });
+            },
+            run     : function(){
+                var self = this;
+                self.fetch();
+                $('#myModal').modal();
+            }
+        };
+
+        view.run();
+    });
+</script>

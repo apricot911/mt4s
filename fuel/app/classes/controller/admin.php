@@ -6,6 +6,10 @@
  * Time: 14:25
  */
 
+use Fuel\Core\View;
+use Fuel\Core\Controller_Template;
+use Model\Room;
+use Model\User;
 
 class Controller_Admin extends Controller_Template{
 
@@ -30,7 +34,10 @@ class Controller_Admin extends Controller_Template{
     }
 
     public function action_course(){
-        $this->template->content = View::forge('admin/course');
+        $view = View::forge('admin/course');
+        $view->room_list = Room::get_all_room()->as_array();
+        $view->teacher_list = User::get_all_teacher()->as_array();
+        $this->template->content = $view;
     }
 
     public function action_user(){

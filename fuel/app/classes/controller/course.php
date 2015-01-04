@@ -6,7 +6,10 @@
  * Time: 17:05
  */
 
-class Controller_Course extends \Fuel\Core\Controller_Template{
+use Fuel\Core\View;
+use Fuel\Core\Controller_Template;
+
+class Controller_Course extends Controller_Template{
 
     public $template = "admin/template";
     public function before(){
@@ -14,12 +17,10 @@ class Controller_Course extends \Fuel\Core\Controller_Template{
         Asset::add_path('assets/plugins', 'plugins');
         $this->template->header = View::forge('admin/header');
         $this->template->navbar = View::forge('admin/navigation');
-        // Asset::css(array('bootstrap.css'));
-        // echo "test";
     }
 
     public function action_index(){
-        return "";
+        return null;
     }
 
     public function action_detail(){
