@@ -13,9 +13,9 @@
             <!-- Main -->
             <div class="row">
                 <div class="page-header">
-                    <h1>授業一覧 <small>じゅぎょー！</small></h1>
+                    <h1>授業一覧 <small>登録された授業一覧です</small></h1>
                     <div class="pull-right">
-                        <button class="btn btn-primary">新規</button>
+                        <button id="create_course_btn" class="btn btn-primary">新規</button>
                     </div>
                     <div class="clearfix"></div>
                 </div>
@@ -66,16 +66,16 @@
 
 ?>
 <!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="create_course_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="myModalLabel">新規授業作成</h4>
             </div>
-            <div class="modal-body">
-                <p class="help-text">新規の授業を作成します</p>
-                <form>
+            <form>
+                <div class="modal-body">
+                    <p class="help-text">新規の授業を作成します</p>
                     <div class="form-group">
                         <label for="course-name" class="control-label">授業名</label>
                         <input type="text" class="form-control" id="course-name" name="course_name">
@@ -104,12 +104,11 @@
                             ?>
                         </select>
                     </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">作成</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -119,7 +118,7 @@
         <td><%=teacher_name%></td>
         <td><%=room_name%></td>
         <td><%=enabled%></td>
-        <td><button class="btn btn-danger">編集</button></td>
+        <td><a href="course/detail.php?id=<%=course_id%>"><button class="btn btn-danger">編集</button></a></td>
     </tr>
 </script>
 <script type="text/javascript">
@@ -128,6 +127,7 @@
         var view = {
             course_list: $('#course_list'),
             course_row_tmpl: _.template($('#course_row_tmpl').html()),
+            create_course_modal: $('#create_course_modal'),
             fetch   : function(){
                 var self = this;
                 var tbody = $('tbody', self.course_list);
@@ -142,10 +142,41 @@
                     }
                 });
             },
+            init    : function(){
+                var self = this;
+                $('#create_course_btn').click(function(){
+                    self.create_course_modal.modal('show');
+                });
+                self.create_course_modal.submit(function(e){
+                    e.preventDefault();
+                    var course_name_form    = $('[name="course_name"]', self.create_course_modal);
+                    var course_teacher_form = $('[name="teacher_id"]', self.create_course_modal);
+                    var course_room_form    = $('[name="room_id"]', self.create_course_modal);
+                    var data = {};
+                    data.name       = course_name_form.val();
+                    data.teacher_id = course_teacher_form.val();
+                    data.room_id    = course_room_form.val();
+                    $.ajax({
+                        url: '/api/course/create.json',
+                        type:'post',
+                        dataType: 'json',
+                        data: JSON.stringify(data)
+                    }).done(function(data){
+                        if(data.status == 1){
+                            self.create_course_modal.modal('hide');
+                            course_name_form.val("");
+                            self.fetch();
+                        }else{
+                            alert("error");
+                        }
+                    });
+
+                });
+            },
             run     : function(){
                 var self = this;
                 self.fetch();
-                $('#myModal').modal();
+                self.init();
             }
         };
 

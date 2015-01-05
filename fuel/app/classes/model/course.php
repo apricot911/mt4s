@@ -21,7 +21,7 @@ class Course extends Model
             "SELECT c.course_id AS course_id, c.name AS course_name, u.name AS teacher_name, r.name AS room_name, ".
             "c.enabled AS enabled FROM courses c JOIN users u ON ".
             "(c.teacher_id = u.user_id AND u.is_teacher = 1 AND c.enabled = 1) JOIN rooms r ON ".
-            "(c.room_id = r.id)"
+            "(c.room_id = r.id) ORDER BY c.course_id DESC"
         );
         $result = $query->execute();
         return $result;
