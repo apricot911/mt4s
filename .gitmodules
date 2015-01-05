@@ -16,3 +16,6 @@
 [submodule "public/assets/plugins/bootflat.github.io"]
 	path = public/assets/plugins/bootflat.github.io
 	url = https://github.com/bootflat/bootflat.github.io.git
+[submodule "public/assets/plugins/jquery"]
+	path = public/assets/plugins/jquery
+	url = git@github.com:jquery/jquery.git
