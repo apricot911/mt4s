@@ -19,3 +19,9 @@
 [submodule "public/assets/plugins/jquery"]
 	path = public/assets/plugins/jquery
 	url = git@github.com:jquery/jquery.git
+[submodule "public/assets/plugins/typeahead"]
+	path = public/assets/plugins/typeahead
+	url = git@github.com:twitter/typeahead.js.git
+[submodule "public/assets/plugins/jquery-typeahead"]
+	path = public/assets/plugins/jquery-typeahead
+	url = git@github.com:running-coder/jquery-typeahead.git

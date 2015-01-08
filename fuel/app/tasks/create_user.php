@@ -18,11 +18,15 @@ class Create_User {
         DB::delete('users')->execute();
         $query = DB::insert('users');
         for($i = 0; $i < 10; $i++){
-            $query->values(array(
-                strval($i), 'test'.$i, 'b000'.$i, 0
-            ));
+            for($j = 0; $j<10; $j++){
+                $query->values(array(
+                    strval($i . '-' . $j), 'テスト'. $j.$i, 'b'.$j.'00'.$i, 0
+                ));
+            }
         }
         $query->execute();
+
+        DB::update('users')->set(array('is_teacher' => '1'))->where('user_id', '=', '0-1')->execute();
 
         DB::delete('courses')->execute();
         $query = DB::insert('courses');
@@ -31,7 +35,7 @@ class Create_User {
 
         foreach($course_name as $i => $val){
             $query->values(array(
-                $val, strval(4), '5A'
+                $val, "0-1", '5A'
             ));
         }
         $query->execute();

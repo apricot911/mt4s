@@ -114,11 +114,11 @@
 </div>
 <script type="text/temaplte" id="course_row_tmpl">
     <tr>
-        <td><a href="course/detail.php?id=<%=course_id%>"><%=course_name%></a></td>
+        <td><a href="course/<%=course_id%>"><%=course_name%></a></td>
         <td><%=teacher_name%></td>
         <td><%=room_name%></td>
         <td><%=enabled%></td>
-        <td><a href="course/detail.php?id=<%=course_id%>"><button class="btn btn-danger">編集</button></a></td>
+        <td><a href="course/<%=course_id%>"><button class="btn btn-danger">編集</button></a></td>
     </tr>
 </script>
 <script type="text/javascript">

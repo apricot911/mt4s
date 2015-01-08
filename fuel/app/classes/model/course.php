@@ -66,4 +66,28 @@ class Course extends Model
         $query->where('course_id', '=', $course_id);
         return $query->execute();
     }
+
+    public static function get_course($id)
+    {
+        $query = DB::query(
+            'SELECT c.name AS course_name, u.name AS teacher_name, c.course_id '.
+            'FROM courses c JOIN users u ON (c.teacher_id = u.user_id AND u.is_teacher = 1 AND c.course_id = :course_id)');
+        $query->parameters(array(
+            'course_id' => $id
+        ));
+        $result = $query->execute();
+        if(is_array($result->as_array())){
+            return $result->as_array()[0];
+        }else{
+            return null;
+        }
+    }
+
+    public static function add_user_to_course($course_id, $user_id)
+    {
+        $query = DB::insert('join_course');
+        $query->columns(array('course_id', 'user_id'));
+
+        return $query->values(array($course_id, $user_id))->execute();
+    }
 } 

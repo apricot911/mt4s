@@ -8,6 +8,7 @@
 
 use Fuel\Core\View;
 use Fuel\Core\Controller_Template;
+use Model\Course;
 use Model\Room;
 use Model\User;
 
@@ -37,7 +38,10 @@ class Controller_Admin extends Controller_Template{
         $this->template->content = View::forge('admin/network');
     }
 
-    public function action_course()
+    /**
+     * コース一覧
+     */
+    public function action_courses()
     {
         $view = View::forge('admin/course');
         $view->room_list = Room::get_all_room()->as_array();
@@ -45,6 +49,22 @@ class Controller_Admin extends Controller_Template{
         $this->template->content = $view;
     }
 
+    /**
+     * コース修正
+     */
+    public function action_course($id){
+        $view = View::forge('admin/course/detail');
+        $view->course = Course::get_course($id);
+        $this->template->content = $view;
+    }
+
+    public function action_students()
+    {
+        $view = View::forge('admin/students');
+        $view->room_list = Room::get_all_room()->as_array();
+        $view->teacher_list = User::get_all_teacher()->as_array();
+        $this->template->content = $view;
+    }
     public function get_config()
     {
         $view = View::forge('admin/config');

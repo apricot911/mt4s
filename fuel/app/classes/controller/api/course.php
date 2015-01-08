@@ -10,8 +10,10 @@
 use Fuel\Core\Input;
 use Fuel\Core\Controller_Rest;
 use Model\Course;
+use Model\User;
 
-class Controller_Api_Course extends Controller_Rest{
+class Controller_Api_Course extends Controller_Rest
+{
 
     public function get_fetch()
     {
@@ -70,6 +72,42 @@ class Controller_Api_Course extends Controller_Rest{
         }
         $result = Course::update_course($course_id, $course_name, $teacher_id, $room_id);
         return self::ok($result);
+    }
+
+
+    public function get_user_list()
+    {
+        $course_id = Input::get("course_id");
+        $user_list = User::find_join_course_user_list($course_id);
+        return $this->response($user_list);
+    }
+
+    public function get_server_list()
+    {
+        $course_id = Input::get("course_id");
+        $server_list = User::find_join_course_server_list($course_id);
+        return $this->response($server_list);
+    }
+
+    //add user
+    public function post_course()
+    {
+        $course_id  = Input::json('course_id');
+        $user_id    = Input::json('user_id');
+        return $this->response(Course::add_user_to_course($course_id, $user_id));
+    }
+
+    //update course
+    public function put_course()
+    {
+
+    }
+
+    //delete user in course
+
+    public function delete_course()
+    {
+
     }
 
     private function ok($status)

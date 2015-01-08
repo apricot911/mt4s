@@ -6,14 +6,29 @@
  * Time: 15:39
  */
 ?>
+<style type="text/css">
+    .typeahead-list{
+        list-style-type: none;
+    }
+    .typeahead-list li.active{
+        background-color: #ebebeb;
+    }
+    .typeahead-result .name {
+        margin: 0 10px;
+    }
+    .typeahead-result .student_id{
 
+    }
+
+
+</style>
 <div class="container">
     <div class="row">
         <div class="col-xs-10 col-xs-offset-1">
             <!-- Main -->
             <div class="row">
                 <div class="page-header">
-                    <h1>3B水曜1限 <small>森岡拓也</small></h1>
+                    <h1><?php echo ($course['course_name']); ?> <small><?php echo $course['teacher_name']; ?></small></h1>
                 </div>
             </div>
             <div class="row">
@@ -23,19 +38,24 @@
                 <div class="col-xs-6">
                     <div class="row">
                         <div class="col-xs-12">
-                            <p class="lead">userlist</p>
+                            <p class="lead pull-left">参加生徒一覧</p>
                             <div class="pull-right">
-                                <button class="btn btn-default">あっど</button>
-                                <button class="btn btn-default">りむーぶ</button>
+                                <button class="btn btn-danger">削除</button>
                             </div>
                             <div class="form-group">
-                                <input type="text" class="form-control search" placeholder="学籍番号">
+                                <div class="typeahead-container">
+                                    <div class="typeahead-field">
+                                        <span class="typeahead-query">
+                                            <input class="form-control" id="french_v1-query" name="french_v1[query]" type="search" placeholder="学籍番号" autocomplete="off">
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-xs-12">
-                            <table class="table">
+                            <table id="user_list" class="table">
                                 <tbody>
                                     <tr>
                                         <td class="col-xs-1">
@@ -101,14 +121,82 @@
         </div>
     </div>
 </div>
+<script type="text/template" id="user_list_tmpl">
+    <tr>
+        <td class="col-xs-1">
+            <input type="checkbox" id="user_<%=student_id%>">
+        </td>
+        <td class="col-xs-5">
+            <label class="control-label" for="user_<%=student_id%>"><%=student_id%></label>
+        </td>
+        <td class="col-xs-6">
+            <label class="control-label" for="user_<%=student_id%>"><%=name%></label>
+        </td>
+    </tr>
+</script>
 <script type="text/javascript">
+
     $(function(){
+        "use strict";
+        var mt4 = {
+            course_id: <?php echo $course['course_id'] ?>,
+            user_list_table: $('#user_list'),
+            user_list_tmpl: _.template($('#user_list_tmpl').html()),
+            fetch_user_list: function(){
+                var self = this;
+                var tbody = $('tbody', self.user_list_table);
+                tbody.empty();
+                $.ajax({
+                    type: 'get',
+                    url: '/api/course/user_list.json',
+                    data: {course_id : self.course_id}
+                }).done(function(data){
+                    _(data).each(function(d){
+                        tbody.append($(self.user_list_tmpl(d)));
+                    });
+                });
+            }
+        };
         var typeaheadSource = [{ id: 1, name: 'John'}, { id: 2, name: 'Alex'}, { id: 3, name: 'Terry'}];
 
-        $('input.search').typeahead({
-            source: typeaheadSource
+        $.typeahead({
+//            input: 'input.search',
+            input: '#french_v1-query',
+            minLength: 1,
+            maxItem: 5,
+            order: 'asc',
+            dynamic: true,
+            display: 'student_id',
+            template: '<span class="row">' +
+                '<span class="student_id">{{student_id}}</span>' +
+                '<span class="name">({{name}})</span>' +
+                '</span>' +
+                '</span>',
+            source: {
+                users: {
+                    url: {
+                        type: 'GET',
+                        url : '/api/user/find.json',
+                        data: {student_id: '{{query}}'}
+                    }
+                }
+            },
+            callback: {
+                onClick: function(node, a, obj, e){
+                    obj.course_id = mt4.course_id;
+                    $.ajax({
+                        type: 'POST',
+                        url: '/api/course/course.json',
+                        dataType: 'json',
+                        data: JSON.stringify(obj)
+                    }).done(function(){
+                        $(node).val("");
+                        mt4.fetch_user_list();
+                    });
+                }
+            }
         });
-
+        mt4.fetch_user_list();
 
     });
 </script>
