@@ -10,32 +10,30 @@ namespace Fuel\Tasks;
 
 
 use Fuel\Core\DB;
+use Model\User;
 
 class Create_User {
     public function run($speech = null)
     {
         //create test user;
         DB::delete('users')->execute();
-        $query = DB::insert('users');
-        for($i = 0; $i < 10; $i++){
-            for($j = 0; $j<10; $j++){
-                $query->values(array(
-                    strval($i . '-' . $j), 'テスト'. $j.$i, 'b'.$j.'00'.$i, 0
-                ));
-            }
+        DB::query("ALTER TABLE users AUTO_INCREMENT = 1")->execute();
+        for($i = 0; $i < 10000; $i++){
+            $id = str_pad($i, 4, "0" , STR_PAD_LEFT);
+            User::add_user('テストユーザ' . $id, 'b'. $id , 0);
         }
-        $query->execute();
 
-        DB::update('users')->set(array('is_teacher' => '1'))->where('user_id', '=', '0-1')->execute();
+        DB::update('users')->set(array('is_teacher' => '1'))->where('user_id', '=', '10')->execute();
 
         DB::delete('courses')->execute();
+        DB::query("ALTER TABLE courses AUTO_INCREMENT = 1")->execute();
         $query = DB::insert('courses');
         $query->columns(array('name', 'teacher_id', 'room_id'));
         $course_name = array("2-A たけし", "3-B たけし", "1-C たけし", "1-B たけし");
 
         foreach($course_name as $i => $val){
             $query->values(array(
-                $val, "0-1", '5A'
+                $val, 10, '5A'
             ));
         }
         $query->execute();

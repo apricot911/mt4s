@@ -8,3 +8,4 @@
 echo $header;
 echo $navbar;
 echo $content;
+echo $footer;

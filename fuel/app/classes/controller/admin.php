@@ -21,6 +21,7 @@ class Controller_Admin extends Controller_Template{
         Asset::add_path('assets/plugins', 'plugins');
         $this->template->header = View::forge('admin/header');
         $this->template->navbar = View::forge('admin/navigation');
+        $this->template->footer = View::forge('admin/footer');
     }
 
     public function action_index()
@@ -63,6 +64,7 @@ class Controller_Admin extends Controller_Template{
         $view = View::forge('admin/students');
         $view->room_list = Room::get_all_room()->as_array();
         $view->teacher_list = User::get_all_teacher()->as_array();
+        $view->student_prefix = User::get_student_prefix_group();
         $this->template->content = $view;
     }
     public function get_config()

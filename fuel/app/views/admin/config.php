@@ -12,7 +12,7 @@
         <div class="col-xs-10 col-xs-offset-1">
             <div class="row">
                 <div class="page-header">
-                    <h3>ユーザ設定 <small>ユーザの情報を修正します。</small></h3>
+                    <h3>ユーザ設定 <small>ユーザ情報を修正します。</small></h3>
                 </div>
             </div>
             <div class="row">

@@ -16,12 +16,14 @@ class mt4
     function up()
     {
         DBUtil::create_table('users', array(
-                'user_id'   => array('type' => 'varchar', 'constraint' => 64),
+                'user_id'   => array('type' => 'int',     'constraint' => 11,   'auto_increment' => true),
                 'name'      => array('type' => 'varchar', 'constraint' => 255),
                 'student_id'=> array('type' => 'varchar', 'constraint' => 5),
                 'is_teacher'=> array('type' => 'tinyint', 'constraint' => 1,    'default' => 0)
             ),
             array('user_id'));
+        //create index
+        DBUtil::create_index('users', 'student_id', 'idx_student_id');
         DBUtil::create_table('courses', array(
                 'course_id' => array('type' => 'int'    , 'constraint' => 11,   'auto_increment' => true),
                 'name'      => array('type' => 'varchar', 'constraint' => 255),
@@ -36,7 +38,7 @@ class mt4
             ),
             array('id'));
         DBUtil::create_table('join_course', array(
-                'user_id'   => array('type' => 'varchar', 'constraint' => 64),
+                'user_id'   => array('type' => 'int'    , 'constraint' => 11),
                 'course_id' => array('type' => 'int'    , 'constraint' => 11),
                 'server_id' => array('type' => 'varchar', 'constraint' => 64,   'null' => true)
             ),
