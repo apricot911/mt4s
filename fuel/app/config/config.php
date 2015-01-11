@@ -258,7 +258,7 @@ return array(
 	/**************************************************************************/
 	/* Always Load                                                            */
 	/**************************************************************************/
-	// 'always_load'  => array(
+	 'always_load'  => array(
 
 		/**
 		 * These packages are loaded on Fuel's startup.
@@ -272,7 +272,8 @@ return array(
 		 * );
 		 */
 		 'packages'  => array(
-		 	'orm',
+//		 	'orm',
+            'auth',
 		 ),
 
 		/**
@@ -289,6 +290,9 @@ return array(
 		 * Classes to autoload & initialize even when not used
 		 */
 		// 'classes'  => array(),
+         'classes' => array(
+             'session'
+         ),
 
 		/**
 		 * Configs to autoload
@@ -309,6 +313,6 @@ return array(
 		 * If you don't want the lang in a group use null as groupname.
 		 */
 		// 'language'  => array(),
-	// ),
+	 ),
 
 );

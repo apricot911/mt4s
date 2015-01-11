@@ -8,6 +8,7 @@
 
 namespace Model;
 
+use Auth\Auth;
 use Fuel\Core\Model;
 use Fuel\Core\DB;
 
@@ -19,17 +20,19 @@ class User extends  Model
         return $query->execute();
     }
 
-    public static function add_user($name, $student_id, $is_teacher)
+    public static function add_user($name, $student_id, $is_teacher, $password = 'Oic0667722233')
     {
         $query = DB::insert('users')
-            ->columns(array('name', 'student_id', 'is_teacher'))
+            ->columns(array('name', 'password','student_id', 'is_teacher'))
             ->values(array(
             'name'          => &$name,
+            'password'      => Auth::instance()->hash_password($password),
             'student_id'    => &$student_id,
             'is_teacher'    => &$is_teacher
         ))->execute();
         return $query;
     }
+
 
     /**
      * ユーザの削除

@@ -17,6 +17,7 @@ class mt4
     {
         DBUtil::create_table('users', array(
                 'user_id'   => array('type' => 'int',     'constraint' => 11,   'auto_increment' => true),
+                'password'  => array('type' => 'varchar', 'constraint' => 255),
                 'name'      => array('type' => 'varchar', 'constraint' => 255),
                 'student_id'=> array('type' => 'varchar', 'constraint' => 5),
                 'is_teacher'=> array('type' => 'tinyint', 'constraint' => 1,    'default' => 0)

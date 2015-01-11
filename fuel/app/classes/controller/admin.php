@@ -26,6 +26,10 @@ class Controller_Admin extends Controller_Template{
 
     public function action_index()
     {
+        session_start();
+        var_dump($_SESSION);
+        session_destroy();
+        phpinfo();
         $this->template->content = View::forge('admin/index');
     }
 

@@ -22,7 +22,7 @@
             </div>
             <div class="row">
                 <div class="col-xs-12">
-                    <table id="course_list" class="table">
+                    <table id="course_list" class="table table-hover">
                         <thead>
                             <tr>
                                 <th class="col-xs-4">名前</th>

@@ -18,7 +18,7 @@ class Create_User {
         //create test user;
         DB::delete('users')->execute();
         DB::query("ALTER TABLE users AUTO_INCREMENT = 1")->execute();
-        for($i = 0; $i < 10000; $i++){
+        for($i = 0; $i < 4000; $i++){
             $id = str_pad($i, 4, "0" , STR_PAD_LEFT);
             User::add_user('テストユーザ' . $id, 'b'. $id , 0);
         }
