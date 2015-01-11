@@ -11,14 +11,14 @@ use Fuel\Core\View;
 use Fuel\Core\Response;
 use Auth\Auth;
 use Fuel\Core\Input;
-use Fuel\Core\Session;
+
 class Controller_Index extends Controller
 {
     public function before(){
         parent::before();
         Asset::add_path('assets/plugins', 'plugins');
         if(Auth::instance()->check()){
-            if(Auth::instance()->get_groups() === 1){
+            if(Auth::instance()->get_groups() == 1){
                 Response::redirect('admin/index');
             }else{
                 Response::redirect('user/index');
@@ -27,7 +27,6 @@ class Controller_Index extends Controller
     }
     public function get_index()
     {
-//        \Fuel\Core\Cookie::set("test", 1);
         $view =  View::forge('login');
         return Response::forge($view);
     }
@@ -47,5 +46,11 @@ class Controller_Index extends Controller
             $view->error = "ユーザ名かパスワードが間違っています。";
             return Response::forge($view);
         }
+    }
+
+    public function get_logout()
+    {
+        Auth::logout();
+        return Response::redirect('/');
     }
 }

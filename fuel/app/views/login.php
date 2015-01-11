@@ -69,7 +69,6 @@
             <label for="inputPassword" class="sr-only">パスワード</label>
             <input type="password" id="inputPassword" name="password" class="form-control" placeholder="パスワード" required>
             <?php
-                var_dump(\Fuel\Core\Session::get());
                 if(isset($error)):
             ?>
             <p class="text-danger"><?php echo $error ?></p>

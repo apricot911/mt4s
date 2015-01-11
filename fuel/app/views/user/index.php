@@ -30,6 +30,9 @@
 	</style>
 </head>
 <body>
+<?php
+var_dump(Session::get());
+?>
 	<header>
 		<div class="container">
 			<div id="logo"></div>

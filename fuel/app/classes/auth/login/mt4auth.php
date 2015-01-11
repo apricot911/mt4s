@@ -39,9 +39,7 @@ class Auth_Login_Mt4Auth extends Auth_Login_Driver {
             'student_id'    => $student_id,
             'password'      => Auth::instance()->hash_password($password)
         ));
-        $result = $query->execute();
-        var_dump($result);
-        $result = $result->as_array();
+        $result = $query->execute()->as_array();
         if(count($result) == 0){
             return false;
         }else if(count($result) == 1){  //one hit でtrue
@@ -101,7 +99,7 @@ class Auth_Login_Mt4Auth extends Auth_Login_Driver {
      */
     public function get_groups()
     {
-        Session::get('is_teacher', null);
+        return Session::get('is_teacher', -1);
     }
 
     /**
@@ -111,7 +109,7 @@ class Auth_Login_Mt4Auth extends Auth_Login_Driver {
      */
     public function get_email()
     {
-        Session::get('student_id');
+        return Session::get('student_id');
     }
 
     /**
@@ -121,7 +119,7 @@ class Auth_Login_Mt4Auth extends Auth_Login_Driver {
      */
     public function get_screen_name()
     {
-        Session::get('name');
+        return Session::get('name');
     }
 
     public function get_user_data($student_id, $password)
