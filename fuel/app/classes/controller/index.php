@@ -53,4 +53,17 @@ class Controller_Index extends Controller
         Auth::logout();
         return Response::redirect('/');
     }
+
+    public function action_p404()
+    {
+        if(!Auth::instance()->check()){
+            return Response::redirect('/');
+        }else{
+            if(Auth::instance()->get_groups() == 1){
+                return Response::redirect('/admin/');
+            }else{
+                return Response::redirect('/user/');
+            }
+        }
+    }
 }

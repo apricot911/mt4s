@@ -23,6 +23,10 @@ class Controller_Admin extends Controller_Template{
         parent::before();
         if(!Auth::instance()->check()){
             return Response::redirect('/');
+        }else{
+            if(Auth::instance()->get_groups() == 0){
+                return Response::redirect('/user/');
+            }
         }
         Asset::add_path('assets/plugins', 'plugins');
         $this->template->header = View::forge('admin/header');

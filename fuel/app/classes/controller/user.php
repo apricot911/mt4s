@@ -31,6 +31,10 @@ class Controller_User extends Controller_Template
         parent::before();
         if(!Auth::instance()->check()){
             return Response::redirect('/');
+        }else{
+            if(Auth::instance()->get_groups() == 1){
+                return Response::redirect('/admin/');
+            }
         }
         Asset::add_path('assets/plugins', 'plugins');
         $this->template->header = View::forge('user/header');
@@ -62,7 +66,7 @@ class Controller_User extends Controller_Template
     {
         $user_name = Input::post('user_name', "OICの生徒");
         $password = Input::post('password', null);
-        if(is_null($password)){
+        if(is_null($password) || $password == ""){
            $data_array = array(
                'name'   => $user_name
            );
