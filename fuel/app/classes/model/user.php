@@ -14,6 +14,13 @@ use Fuel\Core\DB;
 
 class User extends  Model
 {
+    public static function get_user($user_id)
+    {
+        $query = DB::query('SELECT * FROM users WHERE user_id = :user_id');
+        $query->parameters(array('user_id' => $user_id));
+        return $query->execute()->as_array()[0];
+    }
+
     public static function get_all_teacher()
     {
         $query = DB::select('user_id', 'name')->from('users')->where('is_teacher', '=', '1');
@@ -31,6 +38,21 @@ class User extends  Model
             'is_teacher'    => &$is_teacher
         ))->execute();
         return $query;
+    }
+
+    public static function update_user($data_array, $user_id)
+    {
+        $query = DB::update('users');
+        if(isset($data_array['password']))
+        {
+            $data_array['password'] = Auth::instance()->hash_password($data_array['password']);
+        }
+        foreach($data_array as $key => $val)
+        {
+            $query->value($key, $val);
+        }
+        $query->where('user_id', '=', $user_id);
+        return $query->execute();
     }
 
 
@@ -51,7 +73,7 @@ class User extends  Model
      */
     public static function find_student_group($prefix)
     {
-        $sql = "SELECT * FROM users WHERE substr(student_id, 1, 3) = :student_prefix ";
+        $sql = "SELECT * FROM users WHERE substr(student_id, 1, 3) = :student_prefix";
         $query = DB::query($sql);
         $query->parameters(array(
             'student_prefix' => $prefix
@@ -62,13 +84,15 @@ class User extends  Model
     /**
      *  学籍番号のprefixグループリストを取得する
      */
-    public static function get_student_prefix_group(){
+    public static function get_student_prefix_group()
+    {
         $sql = "SELECT substr(student_id, 1, 3) AS prefix FROM users GROUP BY substr(student_id, 1, 3)";
         $query = DB::query($sql);
         return $query->execute()->as_array();
     }
 
-    public static function find_student_id($student_id = ""){
+    public static function find_student_id($student_id = "")
+    {
         $query = DB::query('SELECT user_id, name, student_id FROM users WHERE student_id LIKE :student_id');
         $query->parameters(array(
             'student_id' => $student_id.'%'

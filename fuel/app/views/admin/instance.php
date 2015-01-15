@@ -1,7 +1,3 @@
-<?php
-require 'header.php';
-?>
-
 <style type="text/css">
     #console{
         height:500px;

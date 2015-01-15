@@ -9,6 +9,11 @@
  * @copyright  2010 - 2014 Fuel Development Team
  * @link       http://fuelphp.com
  */
+use Auth\Auth;
+use Fuel\Core\Controller_Template;
+use Fuel\Core\Input;
+use Fuel\Core\Response;
+use Model\User;
 
 /**
  * The Welcome Controller.
@@ -19,8 +24,19 @@
  * @package  app
  * @extends  Controller
  */
-class Controller_User extends Controller
+class Controller_User extends Controller_Template
 {
+    public $template = "admin/template";
+    public function before(){
+        parent::before();
+        if(!Auth::instance()->check()){
+            return Response::redirect('/');
+        }
+        Asset::add_path('assets/plugins', 'plugins');
+        $this->template->header = View::forge('user/header');
+        $this->template->navbar = View::forge('user/navigation');
+        $this->template->footer = View::forge('user/footer');
+    }
 
     /**
      * The basic welcome message
@@ -30,6 +46,33 @@ class Controller_User extends Controller
      */
     public function action_index()
     {
-        return Response::forge(View::forge('user/index'));
+        $view = View::forge('user/index');
+        $this->template->content = $view;
+    }
+
+    public function get_config()
+    {
+        $user_data = User::get_user(Auth::instance()->get_user_id());
+        $view = View::forge('user/config');
+        $view->name = $user_data['name'];
+        $this->template->content = $view;
+    }
+
+    public function post_config()
+    {
+        $user_name = Input::post('user_name', "OICの生徒");
+        $password = Input::post('password', null);
+        if(is_null($password)){
+           $data_array = array(
+               'name'   => $user_name
+           );
+        }else{
+            $data_array = array(
+                'name'  => $user_name,
+                'password'=>$password
+            );
+        }
+        User::update_user($data_array, Auth::instance()->get_user_id());
+        return Response::redirect('/user/config');
     }
 }

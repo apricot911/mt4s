@@ -16,6 +16,7 @@ class Controller_Api_User extends Controller_Rest
     public function get_find()
     {
         $student_id = Input::get("student_id");
+        $course_id  = Input::get("course_id");
         $user_list = User::find_student_id($student_id);
         return $this->response($user_list);
     }

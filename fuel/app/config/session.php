@@ -27,10 +27,10 @@ return array(
 
 	// set it to false to prevent the static session from auto-initializing, know that it might make your session
 	// expire sooner because it's not updated when it's not used. note that auto-initializing always loads the default driver
-	'auto_initialize'	=> true,
+	'auto_initialize'	=> false,
 
 	// if no session type is requested, use the default
-	'driver'			=> 'cookie',
+	'driver'			=> 'file',
 
 	// check for an IP address match after loading the cookie (optional, default = false)
 	'match_ip'			=> false,

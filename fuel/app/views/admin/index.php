@@ -117,77 +117,31 @@
                     </div>
                 </div>
             </div>
+            <?php foreach($course_list as $course):?>
             <div class="row">
                 <div class="col-xs-12 text-center" id="instancelist">
                     <div class="row">
                         <div class="course">
-                            <p>3年B組　にゃんだふる</p>
+                            <p><?php echo $course[0]['course_name'];?>(<?php echo $course[0]['teacher_name']; ?>)</p>
                         </div>
                     </div>
                     <div class="row" id="instance_list">
+                        <?php foreach($course as $user): ?>
                         <div class="col-xs-3">
                             <div class="instance_box">
                                 <div>
                                     <span class="status text-center glyphicon glyphicon-stop"></span>
-                                    <span class="info">192.168.0.120</span>
+                                    <span class="info"><?php echo $user['server_id']; ?></span>
 
-                                    <div class="bar">B2020 森本</div>
+                                    <div class="bar"><?php echo $user['name']?> (<?php echo $user['student_id']; ?>)</div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xs-3">
-                            <div class="instance_box">
-                                <div>
-                                    <span class="status text-center glyphicon glyphicon-stop"></span>
-                                    <span class="info">192.168.0.120</span>
-
-                                    <div class="bar">B2020 森本</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-3">
-                            <div class="instance_box">
-                                <div>
-                                    <span class="status text-center glyphicon glyphicon-stop"></span>
-                                    <span class="info">192.168.0.120</span>
-
-                                    <div class="bar">B2020 森本</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-3">
-                            <div class="instance_box">
-                                <div>
-                                    <span class="status text-center glyphicon glyphicon-stop"></span>
-                                    <span class="info">192.168.0.120</span>
-
-                                    <div class="bar">B2020 森本</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-3">
-                            <div class="instance_box">
-                                <div>
-                                    <span class="status text-center glyphicon glyphicon-stop"></span>
-                                    <span class="info">192.168.0.120</span>
-
-                                    <div class="bar">B2020 森本</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-3">
-                            <div class="instance_box">
-                                <div>
-                                    <span class="status text-center glyphicon glyphicon-stop"></span>
-                                    <span class="info">192.168.0.120</span>
-
-                                    <div class="bar">B2020 森本</div>
-                                </div>
-                            </div>
-                        </div>
+                        <?php endforeach; ?>
                     </div>
                 </div>
             </div>
+            <?php endforeach; ?>
         </div>
     </div>
 </div>
@@ -214,43 +168,43 @@
 //        }
 //    });
 
-
-
-    $(function(){
-        //fetch servers
-        $.ajax({
-            url: '/openstack/send_request.json',
-            type: 'post',
-            data: '{"component": "nova", "path": "/servers", "method": "get"}'
-        }).done(function(data){
-            if(data != null){
-                var list = $('#instance_list');
-                list.empty();
-                data['servers'].forEach(function(e){
-                    var name = e.name;
-                    var template = _.template($('#instance_tmpl').html());
-                    var instance = $(template({status: 'play', ipaddress: '10', instancename: name}));
-
-                    list.append(instance);
-                });
-                $('.instance_box').click(function(){
-                    if($(this).is('.select')){
-                        $(this).removeClass('select');
-                    }else{
-                        $(this).addClass("select");
-                    }
-                });
-            }
-        });
-
-        $('.instance_box').click(function(){
-            if($(this).is('.select')){
-                $(this).removeClass('select');
-            }else{
-                $(this).addClass("select");
-            }
-        });
-    });
+//
+//
+//    $(function(){
+//        //fetch servers
+//        $.ajax({
+//            url: '/openstack/send_request.json',
+//            type: 'post',
+//            data: '{"component": "nova", "path": "/servers", "method": "get"}'
+//        }).done(function(data){
+//            if(data != null){
+//                var list = $('#instance_list');
+//                list.empty();
+//                data['servers'].forEach(function(e){
+//                    var name = e.name;
+//                    var template = _.template($('#instance_tmpl').html());
+//                    var instance = $(template({status: 'play', ipaddress: '10', instancename: name}));
+//
+//                    list.append(instance);
+//                });
+//                $('.instance_box').click(function(){
+//                    if($(this).is('.select')){
+//                        $(this).removeClass('select');
+//                    }else{
+//                        $(this).addClass("select");
+//                    }
+//                });
+//            }
+//        });
+//
+//        $('.instance_box').click(function(){
+//            if($(this).is('.select')){
+//                $(this).removeClass('select');
+//            }else{
+//                $(this).addClass("select");
+//            }
+//        });
+//    });
 </script>
 </body>
 </html>

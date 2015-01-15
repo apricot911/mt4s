@@ -6,11 +6,14 @@
  * Time: 14:25
  */
 
+use Fuel\Core\Session;
 use Fuel\Core\View;
 use Fuel\Core\Controller_Template;
 use Model\Course;
 use Model\Room;
 use Model\User;
+use Auth\Auth;
+use Fuel\Core\Response;
 
 class Controller_Admin extends Controller_Template{
 
@@ -18,6 +21,9 @@ class Controller_Admin extends Controller_Template{
     public function before()
     {
         parent::before();
+        if(!Auth::instance()->check()){
+            return Response::redirect('/');
+        }
         Asset::add_path('assets/plugins', 'plugins');
         $this->template->header = View::forge('admin/header');
         $this->template->navbar = View::forge('admin/navigation');
@@ -26,7 +32,14 @@ class Controller_Admin extends Controller_Template{
 
     public function action_index()
     {
-        $this->template->content = View::forge('admin/index');
+        $view = View::forge('admin/index');
+        $course_list = array();
+        foreach(Course::get_course_user_list() as $course){
+            $course_list[$course['course_id']][] = $course;
+        }
+        $view->course_list = $course_list;
+        $view->test = Course::get_course_user_list();
+        $this->template->content = $view;
     }
 
     public function action_instance()

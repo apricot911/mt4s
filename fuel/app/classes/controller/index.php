@@ -17,16 +17,16 @@ class Controller_Index extends Controller
     public function before(){
         parent::before();
         Asset::add_path('assets/plugins', 'plugins');
-        if(Auth::instance()->check()){
-            if(Auth::instance()->get_groups() == 1){
-                Response::redirect('admin/index');
-            }else{
-                Response::redirect('user/index');
-            }
-        }
     }
     public function get_index()
     {
+        if(Auth::instance()->check()){
+            if(Auth::instance()->get_groups() == 1){
+                return Response::redirect('admin/index');
+            }else{
+                return Response::redirect('user/index');
+            }
+        }
         $view =  View::forge('login');
         return Response::forge($view);
     }

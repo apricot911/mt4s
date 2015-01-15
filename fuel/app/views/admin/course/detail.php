@@ -157,7 +157,6 @@
                 });
             }
         };
-        var typeaheadSource = [{ id: 1, name: 'John'}, { id: 2, name: 'Alex'}, { id: 3, name: 'Terry'}];
 
         $.typeahead({
 //            input: 'input.search',
@@ -177,7 +176,7 @@
                     url: {
                         type: 'GET',
                         url : '/api/user/find.json',
-                        data: {student_id: '{{query}}'}
+                        data: {student_id: '{{query}}', course_id: mt4.course_id}
                     }
                 }
             },

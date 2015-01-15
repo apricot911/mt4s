@@ -27,6 +27,18 @@ class Course extends Model
         return $result;
     }
 
+    public static function get_course_user_list()
+    {
+        $query = DB::query(
+            "SELECT u.user_id, u.name, u.student_id, jc.course_id, c.name AS course_name, t.name AS teacher_name, IFNULL(jc.server_id, 'NULL') AS server_id ".
+            "FROM users u JOIN join_course jc ON (u.user_id = jc.user_id) ".
+            "JOIN courses c ON (jc.course_id = c.course_id) JOIN (SELECT user_id, name FROM users WHERE is_teacher = 1) t ON(c.teacher_id = t.user_id)".
+            "ORDER BY jc.course_id DESC"
+        );
+        $result = $query->execute();
+        return $result->as_array();
+    }
+
     /**
      * コースの追加
      * @param $course_name
