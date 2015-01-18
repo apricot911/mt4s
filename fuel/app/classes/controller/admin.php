@@ -6,6 +6,7 @@
  * Time: 14:25
  */
 
+use Fuel\Core\Input;
 use Fuel\Core\Session;
 use Fuel\Core\View;
 use Fuel\Core\Controller_Template;
@@ -61,7 +62,7 @@ class Controller_Admin extends Controller_Template{
      */
     public function action_courses()
     {
-        $view = View::forge('admin/course');
+        $view = View::forge('admin/courses');
         $view->room_list = Room::get_all_room()->as_array();
         $view->teacher_list = User::get_all_teacher()->as_array();
         $this->template->content = $view;
@@ -86,9 +87,34 @@ class Controller_Admin extends Controller_Template{
     }
     public function get_config()
     {
+        $user_data = User::get_user(Auth::instance()->get_user_id());
         $view = View::forge('admin/config');
+        $view->user_name = $user_data['name'];
+        $view->student_id = $user_data['student_id'];
         $this->template->content = $view;
     }
+
+    public function post_config()
+    {
+        $user_name = Input::post('user_name');
+        $student_id = Input::post('student_id');
+        $password = Input::post('password', null);
+        if(is_null($password) || $password == ""){
+            $user_data = array(
+                'name'  =>  $user_name,
+                'student_id'    => $student_id
+            );
+        }else{
+            $user_data = array(
+                'name'      => $user_name,
+                'student_id'=> $student_id,
+                'password'  => $password
+            );
+        }
+        User::update_user($user_data, Auth::instance()->get_user_id());
+        Response::redirect('/admin/config');
+    }
+
     public function action_user()
     {
         $this->template->content = View::forge('admin/index');

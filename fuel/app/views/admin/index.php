@@ -10,6 +10,7 @@
         text-align: center;
         cursor: pointer;
         border-radius: 2px;
+        margin-bottom:5px;
     }
 
     .instance_box a {
@@ -23,7 +24,7 @@
     .instance_box .status {
         padding-top: 15px;
         padding-bottom: 20px;
-        font-size: 5em;
+        font-size: 3.5em;
         color: #FFF;
     }
 
@@ -102,109 +103,251 @@
             <div class="row">
                 <div class="col-xs-12" id="navigation">
                     <div class="row text-center">
-                        <div class="col-xs-1">
+                        <div class="col-xs-1 col-xs-offset-9">
                             <button class="btn btn-default">起動</button>
                         </div>
                         <div class="col-xs-1">
                             <button class="btn btn-danger">停止</button>
                         </div>
-                        <div class="col-xs-1 col-xs-offset-7">
-                            <button class="btn btn-primary">新規</button>
-                        </div>
-                        <div class="col-xs-2">
-                            <button class="btn btn-danger">削除</button>
+                        <div class="col-xs-1">
+                            <button class="btn btn-info">詳細</button>
                         </div>
                     </div>
                 </div>
             </div>
-            <?php foreach($course_list as $course):?>
             <div class="row">
-                <div class="col-xs-12 text-center" id="instancelist">
-                    <div class="row">
-                        <div class="course">
-                            <p><?php echo $course[0]['course_name'];?>(<?php echo $course[0]['teacher_name']; ?>)</p>
-                        </div>
-                    </div>
-                    <div class="row" id="instance_list">
-                        <?php foreach($course as $user): ?>
-                        <div class="col-xs-3">
-                            <div class="instance_box">
-                                <div>
-                                    <span class="status text-center glyphicon glyphicon-stop"></span>
-                                    <span class="info"><?php echo $user['server_id']; ?></span>
+                <div class="col-xs-12 text-center" id="course_list">
 
-                                    <div class="bar"><?php echo $user['name']?> (<?php echo $user['student_id']; ?>)</div>
-                                </div>
-                            </div>
-                        </div>
-                        <?php endforeach; ?>
-                    </div>
                 </div>
             </div>
-            <?php endforeach; ?>
         </div>
     </div>
 </div>
-<div data-spy="affix" data-offset-top="60" data-offset-bottom="200">
-    ...
-</div>
-<script id="instance_tmpl" type="text/template">
-    <div class="col-xs-3">
+<script type="text/template" id="course_list_tmpl">
+    <div class="row" data-course_id="<%=course_id%>">
+        <div class="col-xs-12 text-center">
+            <div class="row">
+                <div class="course">
+                    <p><%=course_name%> (<%=teacher_name%>)</p>
+                </div>
+            </div>
+            <div class="instance_list">
+
+            </div>
+        </div>
+    </div>
+</script>
+<script type="text/template" id="instance_tmpl">
+    <div class="col-xs-2" data-server_id="<%if(server_id != 'NULL'){print(server_id);}%>">
         <div class="instance_box">
             <div>
-                <span class="status text-center glyphicon glyphicon-<%= status %>"></span>
-                <span class="info"><%= ipaddress%></span>
+                <span class="status text-center glyphicon <%if(server_id == 'NULL'){print('glyphicon-minus');}else{print('glyphicon-refresh');}%>">
+                </span>
+                <span class="info"><%if(server_id == 'NULL'){print('未生成');}else{print('xxx.xxx.xxx.xxx');}%></span>
 
-                <div class="bar"><%= instancename %></div>
+                <div class="bar"><%= name %> (<%=student_id%>)</div>
             </div>
         </div>
     </div>
 </script>
 <script type="text/javascript">
-//    $('.chart').easyPieChart({
-//        easing: 'easeOutBounce',
-//        onStep: function(from, to, percent) {
-//            $(this.el).find('.percent').text(Math.round(percent));
-//        }
-//    });
+    $(function(){
+        var mt4 = {
+            course_list_tmpl: _.template($('#course_list_tmpl').html()),
+            instance_tmpl: _.template($('#instance_tmpl').html()),
+            course_list: $('#course_list'),
+            event_register: function(){
+                $('.instance_box').click(function(){
 
-//
-//
-//    $(function(){
-//        //fetch servers
-//        $.ajax({
-//            url: '/openstack/send_request.json',
-//            type: 'post',
-//            data: '{"component": "nova", "path": "/servers", "method": "get"}'
-//        }).done(function(data){
-//            if(data != null){
-//                var list = $('#instance_list');
-//                list.empty();
-//                data['servers'].forEach(function(e){
-//                    var name = e.name;
-//                    var template = _.template($('#instance_tmpl').html());
-//                    var instance = $(template({status: 'play', ipaddress: '10', instancename: name}));
-//
-//                    list.append(instance);
-//                });
-//                $('.instance_box').click(function(){
-//                    if($(this).is('.select')){
-//                        $(this).removeClass('select');
-//                    }else{
-//                        $(this).addClass("select");
-//                    }
-//                });
-//            }
-//        });
-//
-//        $('.instance_box').click(function(){
-//            if($(this).is('.select')){
-//                $(this).removeClass('select');
-//            }else{
-//                $(this).addClass("select");
-//            }
-//        });
-//    });
+                });
+            },
+            fetch_all_insntace_list: function(){
+                var self = this;
+                $.ajax({
+                    url: '/api/instance/course_list.json',
+                    type: 'get'
+                }).done(function(data){
+                    var instance_list = data;
+                    _(data).each(function(course_data){
+                        var course_view = $(self.course_list_tmpl(course_data));
+                        self.course_list.append(course_view);
+                        $.ajax({
+                            url: '/api/instance/course_user_list.json',
+                            type: 'get',
+                            data: {
+                                course_id: course_data.course_id
+                            }
+                        }).done(function(data){
+                            var instance_list_view = $('.instance_list', course_view);
+                            _(data).each(function(instance_data){
+                                var instance_view = $(self.instance_tmpl(instance_data));
+                                instance_view.click(function(){
+                                    if($('.instance_box', this).is('.select')){
+                                        $('.instance_box', this).removeClass('select');
+                                    }else{
+                                        $('.instance_box', this).addClass("select");
+                                    }
+                                });
+                                instance_list_view.append(instance_view);
+                            });
+                        });
+                    });
+                });
+            },
+            all_instance_status_check: function(){
+                var self = this;
+                var list = _($('[data-course_id]')).map(function(course_view){
+                    return _($('[data-server_id*="-"]', course_view)).map(function(instance_view){
+                        return $(instance_view).data('server_id');
+                    });
+                });
+                list = list.filter(function(arr){
+                    return arr.length > 0;
+                });
+                list.forEach(function(instance_list){
+                    instance_list.forEach(function(server_id){
+                        self.instance_list_check1(server_id);
+                    });
+                });
+            },
+            instance_list_check1: function(server_id){
+                var send_data = {
+                    component:  'nova',
+                    path:       '/servers/'+server_id,
+                    method:     'get',
+                    data:       ""
+                };
+                return $.ajax({
+                    url: '/openstack/send_request.json',
+                    type: 'post',
+                    dataType:'json',
+                    data: JSON.stringify(send_data)
+                }).done(function(data){
+                    console.log(data);
+                    var instance_view = $('[data-server_id="'+server_id+'"]');
+                    if(data.server != null){
+                        var name = data.server.name;
+                        var addresses = data.server.addresses;
+                        var vm_status = data.server['OS-EXT-STS:vm_state'];
+                        var power_state = data.server['OS-EXT-STS:power_state'];
+                        //はめ込み
+                        var status = $('.status', instance_view).removeClass('glyphicon-minus glyphicon-refresh glyphicon-play glyphicon-stop');
+                        if(vm_status == 'active'){
+                            status.addClass('glyphicon-play');
+                        }else{
+                            status.text(vm_status);
+                        }
+                    }else if(data.itemNotFound != null){
+                        instance_view.addClass('error');
+                    }
+                });
+            },
+            instance_list_check: function(list){
+                var index = -1;
+                var tmp_list = list;
+                return function(){
+                    index++;
+                    if(tmp_list.length == index){
+                        index = 0;
+                    }
+                    var server_id = tmp_list[index];
+                    var send_data = {
+                            component:  'nova',
+                            path:       '/servers/'+server_id,
+                            method:     'get',
+                            data:       ""
+                        };
+                    return $.ajax({
+                        url: '/openstack/send_request.json',
+                        type: 'post',
+                        dataType:'json',
+                        data: JSON.stringify(send_data)
+                    }).done(function(data){
+                        console.log(data);
+                        var instance_view = $('[data-server_id="'+server_id+'"]');
+                        if(data.server != null){
+                            var name = data.server.name;
+                            var addresses = data.server.addresses;
+                            var vm_status = data.server['OS-EXT-STS:vm_state'];
+                            var power_state = data.server['OS-EXT-STS:power_state'];
+                            //はめ込み
+                            var status = $('.status', instance_view).removeClass('glyphicon-minus glyphicon-refresh glyphicon-play glyphicon-stop');
+                            if(vm_status == 'active'){
+                                status.addClass('glyphicon-play');
+                            }else{
+                                status.text(vm_status);
+                            }
+                        }else if(data.itemNotFound != null){
+                            instance_view.addClass('error');
+                        }
+                    });
+                }
+            },
+            start: function(){
+                var self = this;
+                self.event_register();
+                self.fetch_all_insntace_list();
+            }
+        };
+
+        function create_instance(name, user_id, course_id){
+            var imageRef    = "02803367-771e-4c39-9a13-bbffb530f65f";
+            var flavorRef   = "2b128dfd-349f-4027-900f-8a2cea977828";
+            var data = {
+                server: {
+                    name: name,
+                    imageRef: imageRef,
+                    flavorRef: flavorRef,
+                    max_count: 1,
+                    min_count: 1,
+                    networks: [
+                        {uuid: '780a30bd-9638-46ab-b349-055301973fc9'}
+                    ],
+                    security_groups:[
+                        {name: 'default'}
+                    ]
+                }
+            };
+            var sendData =  {
+                component: "nova",
+                path: "/servers",
+                method: "post",
+                data: data
+            };
+
+            $.ajax({
+                url: '/openstack/send_request.json',
+                type: 'post',
+                dataType: 'json',
+                data: JSON.stringify(sendData)
+
+            }).done(function(data){
+                console.log(data);
+                //save
+                if(data.server != null){//成功
+                    var data = {
+                        user_id: user_id,
+                        course_id: course_id,
+                        server_id: data.server.id
+                    };
+                    $.ajax({
+                        url: '/api/course/add_server.json',
+                        type: 'post',
+                        data: JSON.stringify(data)
+                    }).done(function(data){
+                        if(data == 1){
+                            //ok
+                        }
+                    });
+                }else{
+                    //error
+                }
+            });
+        }
+        window.create_instance = create_instance;
+        mt4.start();
+        window.mt4 = mt4;
+    });
 </script>
 </body>
 </html>

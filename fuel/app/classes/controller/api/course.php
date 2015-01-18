@@ -7,13 +7,22 @@
  */
 
 
+use Auth\Auth;
 use Fuel\Core\Input;
 use Fuel\Core\Controller_Rest;
+use Fuel\Core\Response;
 use Model\Course;
 use Model\User;
 
 class Controller_Api_Course extends Controller_Rest
 {
+
+    public function before(){
+        parent::before();
+        if(!Auth::check()){
+            return Response::redirect('/');
+        }
+    }
 
     public function get_fetch()
     {
@@ -104,10 +113,28 @@ class Controller_Api_Course extends Controller_Rest
     }
 
     //delete user in course
-
-    public function delete_course()
+    public function delete_course_user()
     {
+        $course_id  = Input::json('course_id', null);
+        $student_ids   = Input::json('student_ids');
+        if($course_id == null){
+            self::bad_response();
+        }
+        $this->response(User::delete_join_course_user($course_id, $student_ids));
 
+    }
+
+    public function post_add_server()
+    {
+        $course_id  = Input::json('course_id');
+        $user_id    = Input::json('user_id');
+        $server_id  = Input::json('server_id');
+        if(empty($course_id) || empty($user_id))
+        {
+            self::bad_response();
+        }
+
+        return $this->response(Course::add_server($user_id, $course_id, $server_id));
     }
 
     private function ok($status)
@@ -121,5 +148,4 @@ class Controller_Api_Course extends Controller_Rest
             'status'    => -1
         ));
     }
-
 } 

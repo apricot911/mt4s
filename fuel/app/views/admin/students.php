@@ -178,7 +178,7 @@
                         tbody.empty();
                         _(data).each(function(d){
                             var row = $(self.user_list_row_tmpl(d));
-                            row.click(function(){
+                            row.click(function(e){
                                 var checkbox = $('input[type="checkbox"]', this);
                                 checkbox.prop('checked', !checkbox.prop('checked'));
                             });
@@ -196,25 +196,27 @@
                 var delete_user_list = _(delete_user_list_dom).map(function(dom){
                     return $(dom).val();
                 });
-                if(delete_user_list.length == 0){
-                    return;
+                if(delete_user_list.length > 0){
+                    var data = {
+                        user_list: delete_user_list
+                    };
+                    $.ajax({
+                        url: '/api/user/delete.json',
+                        type: 'delete',
+                        dataType: 'json',
+                        ContentType: 'application/json',
+                        data: JSON.stringify(data)
+                    }).done(function(data){
+                        if(data.status >= 1){
+                            _(delete_user_list_dom).each(function(dom){
+                                var tr = $(dom).parents('tr');
+                                tr.hide('slow', function(){
+                                    tr.remove();
+                                });
+                            });
+                        }
+                    });
                 }
-                var data = {
-                    user_list: delete_user_list
-                };
-                $.ajax({
-                    url: '/api/user/delete.json',
-                    type: 'delete',
-                    dataType: 'json',
-                    ContentType: 'application/json',
-                    data: JSON.stringify(data)
-                }).done(function(data){
-                    if(data.status >= 1){
-                        _(delete_user_list_dom).each(function(dom){
-                            $(dom).parents('tr').remove();
-                        });
-                    }
-                });
             },
             start: function(){
                 var self = this;

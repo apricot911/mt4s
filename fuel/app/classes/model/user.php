@@ -68,6 +68,24 @@ class User extends  Model
     }
 
     /**
+     * 授業に参加したユーザを削除する
+     * @param $course_id
+     * @param $student_ids
+     * @return object
+     */
+    public static function delete_join_course_user($course_id, $student_ids)
+    {
+        $sql = "DELETE FROM join_course WHERE course_id = :course_id AND user_id IN (SELECT user_id FROM users WHERE student_id IN :student_ids)";
+        $query = DB::query($sql);
+        $query->parameters(array(
+            'course_id' => $course_id,
+            'student_ids'   => $student_ids
+        ));
+        return $query->execute();
+    }
+
+
+    /**
      * 学籍番号でグループ化したリストを取得する
      * @param $prefix [b2],[b1]
      */

@@ -6,24 +6,25 @@
  * Time: 23:17
  */
 
+use Fuel\Core\Session;
+
 define("SERVER_ADDRESS", "133.242.238.61");
+define("OPENSTACK_TENANT", "admin");
+define("OPENSTACK_TENANT_USER", "admin");
+define("OPENSTACK_TENANT_PASSWORD", "mysql");
 
 class Controller_Openstack extends Controller_Rest{
 
 
     public function before(){
         parent::before();
-        Session::destroy();
-        Session::instance();
         self::fetch_token();
-       // echo \mt4\TokenHelper::getPublicUrl("nova", Session::get("openstack"));
-//        $this->template->token = Session::get('token');
-//        $this->template->tenantid = Session::get('tenantid');
     }
 
     public function action_index(){
         echo Input::ip();
-        return "aa";
+        echo self::get_public_url('nova');
+        return "";
     }
 
     public function action_api(){
@@ -47,27 +48,31 @@ class Controller_Openstack extends Controller_Rest{
         if(empty($public_url)){
             return "error";
         }
+//        echo Session::get('token');
         $url        = $public_url . $path;
-        $result     = self::send_curl_request($url, $method, $data);
-//        echo "<br>" . $url . "<br>";
-//        var_dump($result);
-//        return "";
+        $result     = self::send_curl_request($url, $method, json_encode($data));
+        if($result == "Authentication required"){
+            self::fetch_token(true);
+            $result = self::send_curl_request($url, $method, json_encode($data));
+        }
         return $this->response(json_decode($result));
     }
 
     /**
      * OpenStackのtokenを取得する
      */
-    public function fetch_token(){
+    public function fetch_token($force = false){
         if ((new DateTime(Session::get('token_expire', 'now')))->getTimestamp() < (new Datetime('now'))->getTimestamp()){
-            return;
+            if(!$force){
+                return;
+            }
         }
         /**
          * {"auth": {"tenantName": "admin", "passwordCredentials": {"username": "admin", "password": "mysql"}}}
          */
         $str_data = json_encode(array('auth' =>
-            array('tenantName' => 'admin', 'passwordCredentials' =>
-                array('username' => 'admin', 'password' => 'mysql'))));
+            array('tenantName' => OPENSTACK_TENANT, 'passwordCredentials' =>
+                array('username' => OPENSTACK_TENANT_USER, 'password' => OPENSTACK_TENANT_PASSWORD))));
         $ch = curl_init('http://'. SERVER_ADDRESS .':5000/v2.0/tokens');
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
         curl_setopt($ch, CURLOPT_POSTFIELDS, $str_data);
@@ -99,6 +104,8 @@ class Controller_Openstack extends Controller_Rest{
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
             'Content-Type: application/json',
             'Accept: application/json',
+            'User-Agent: python-novaclient',
+            'X-Auth-Project-Id: '. OPENSTACK_TENANT_USER,
             'X-Auth-Token: ' . $token
         ));
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);

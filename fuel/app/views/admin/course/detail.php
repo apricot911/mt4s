@@ -40,7 +40,7 @@
                         <div class="col-xs-12">
                             <p class="lead pull-left">参加生徒一覧</p>
                             <div class="pull-right">
-                                <button class="btn btn-danger">削除</button>
+                                <button class="btn btn-danger" id="delete_student">削除</button>
                             </div>
                             <div class="form-group">
                                 <div class="typeahead-container">
@@ -57,61 +57,61 @@
                         <div class="col-xs-12">
                             <table id="user_list" class="table">
                                 <tbody>
-                                    <tr>
-                                        <td class="col-xs-1">
-                                            <input type="checkbox" id="user_b2020">
-                                        </td>
-                                        <td class="col-xs-5">
-                                            <label class="control-label" for="user_b2020">b2020</label>
-                                        </td>
-                                        <td class="col-xs-6">
-                                            <label class="control-label" for="user_b2020">みかん</label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="col-xs-1">
-                                            <input type="checkbox" id="user_b2020">
-                                        </td>
-                                        <td class="col-xs-5">
-                                            <label class="control-label" for="user_b2020">b2020</label>
-                                        </td>
-                                        <td class="col-xs-6">
-                                            <label class="control-label" for="user_b2020">みかん</label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="col-xs-1">
-                                            <input type="checkbox" id="user_b2020">
-                                        </td>
-                                        <td class="col-xs-5">
-                                            <label class="control-label" for="user_b2020">b2020</label>
-                                        </td>
-                                        <td class="col-xs-6">
-                                            <label class="control-label" for="user_b2020">みかん</label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="col-xs-1">
-                                            <input type="checkbox" id="user_b2020">
-                                        </td>
-                                        <td class="col-xs-5">
-                                            <label class="control-label" for="user_b2020">b2020</label>
-                                        </td>
-                                        <td class="col-xs-6">
-                                            <label class="control-label" for="user_b2020">みかん</label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="col-xs-1">
-                                            <input type="checkbox" id="user_b2020">
-                                        </td>
-                                        <td class="col-xs-5">
-                                            <label class="control-label" for="user_b2020">b2020</label>
-                                        </td>
-                                        <td class="col-xs-6">
-                                            <label class="control-label" for="user_b2020">みかん</label>
-                                        </td>
-                                    </tr>
+<!--                                    <tr>-->
+<!--                                        <td class="col-xs-1">-->
+<!--                                            <input type="checkbox" id="user_b2020">-->
+<!--                                        </td>-->
+<!--                                        <td class="col-xs-5">-->
+<!--                                            <label class="control-label" for="user_b2020">b2020</label>-->
+<!--                                        </td>-->
+<!--                                        <td class="col-xs-6">-->
+<!--                                            <label class="control-label" for="user_b2020">みかん</label>-->
+<!--                                        </td>-->
+<!--                                    </tr>-->
+<!--                                    <tr>-->
+<!--                                        <td class="col-xs-1">-->
+<!--                                            <input type="checkbox" id="user_b2020">-->
+<!--                                        </td>-->
+<!--                                        <td class="col-xs-5">-->
+<!--                                            <label class="control-label" for="user_b2020">b2020</label>-->
+<!--                                        </td>-->
+<!--                                        <td class="col-xs-6">-->
+<!--                                            <label class="control-label" for="user_b2020">みかん</label>-->
+<!--                                        </td>-->
+<!--                                    </tr>-->
+<!--                                    <tr>-->
+<!--                                        <td class="col-xs-1">-->
+<!--                                            <input type="checkbox" id="user_b2020">-->
+<!--                                        </td>-->
+<!--                                        <td class="col-xs-5">-->
+<!--                                            <label class="control-label" for="user_b2020">b2020</label>-->
+<!--                                        </td>-->
+<!--                                        <td class="col-xs-6">-->
+<!--                                            <label class="control-label" for="user_b2020">みかん</label>-->
+<!--                                        </td>-->
+<!--                                    </tr>-->
+<!--                                    <tr>-->
+<!--                                        <td class="col-xs-1">-->
+<!--                                            <input type="checkbox" id="user_b2020">-->
+<!--                                        </td>-->
+<!--                                        <td class="col-xs-5">-->
+<!--                                            <label class="control-label" for="user_b2020">b2020</label>-->
+<!--                                        </td>-->
+<!--                                        <td class="col-xs-6">-->
+<!--                                            <label class="control-label" for="user_b2020">みかん</label>-->
+<!--                                        </td>-->
+<!--                                    </tr>-->
+<!--                                    <tr>-->
+<!--                                        <td class="col-xs-1">-->
+<!--                                            <input type="checkbox" id="user_b2020">-->
+<!--                                        </td>-->
+<!--                                        <td class="col-xs-5">-->
+<!--                                            <label class="control-label" for="user_b2020">b2020</label>-->
+<!--                                        </td>-->
+<!--                                        <td class="col-xs-6">-->
+<!--                                            <label class="control-label" for="user_b2020">みかん</label>-->
+<!--                                        </td>-->
+<!--                                    </tr>-->
                                 </tbody>
                             </table>
                         </div>
@@ -122,9 +122,9 @@
     </div>
 </div>
 <script type="text/template" id="user_list_tmpl">
-    <tr>
+    <tr data-student_id="<%=student_id%>">
         <td class="col-xs-1">
-            <input type="checkbox" id="user_<%=student_id%>">
+            <input type="checkbox" id="user_<%=student_id%>" value="<%=student_id%>">
         </td>
         <td class="col-xs-5">
             <label class="control-label" for="user_<%=student_id%>"><%=student_id%></label>
@@ -141,7 +141,19 @@
         var mt4 = {
             course_id: <?php echo $course['course_id'] ?>,
             user_list_table: $('#user_list'),
+            delete_student_btn: $('#delete_student'),
             user_list_tmpl: _.template($('#user_list_tmpl').html()),
+            event_register: function(){
+                var self = this;
+                self.delete_student_btn.click(function(){
+                    var id_list = _($('#user_list input[type="checkbox"]:checked')).map(function(d){
+                        return $(d).val();
+                    });
+                    if(id_list.length > 0){
+                        self.delete_user(self.course_id, id_list);
+                    }
+                });
+            },
             fetch_user_list: function(){
                 var self = this;
                 var tbody = $('tbody', self.user_list_table);
@@ -154,6 +166,26 @@
                     _(data).each(function(d){
                         tbody.append($(self.user_list_tmpl(d)));
                     });
+                });
+            },
+            delete_user: function(course_id, student_ids){
+                var data = {
+                    course_id: course_id,
+                    student_ids: student_ids
+                };
+                $.ajax({
+                    url: '/api/course/course_user.json',
+                    type: 'delete',
+                    data: JSON.stringify(data)
+                }).done(function(data){
+                    if(data > 0){
+                        _(student_ids).each(function(id){
+                            var tr = $('#user_list tr[data-student_id="'+id+'"]');
+                            tr.hide('slow',function(){
+                               tr.remove();
+                            });
+                        });
+                    }
                 });
             }
         };
@@ -195,6 +227,7 @@
                 }
             }
         });
+        mt4.event_register();
         mt4.fetch_user_list();
 
     });

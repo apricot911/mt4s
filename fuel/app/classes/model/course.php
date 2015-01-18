@@ -21,7 +21,19 @@ class Course extends Model
             "SELECT c.course_id AS course_id, c.name AS course_name, u.name AS teacher_name, r.name AS room_name, ".
             "c.enabled AS enabled FROM courses c JOIN users u ON ".
             "(c.teacher_id = u.user_id AND u.is_teacher = 1 AND c.enabled = 1) JOIN rooms r ON ".
-            "(c.room_id = r.id) ORDER BY c.course_id DESC"
+            "(c.room_id = r.id) ORDER BY c.course_id"
+        );
+        $result = $query->execute();
+        return $result;
+    }
+
+    public static function get_have_instance_course_list()
+    {
+        $query = DB::query(
+            "SELECT c.course_id AS course_id, c.name AS course_name, u.name AS teacher_name, r.name AS room_name, ".
+            "c.enabled AS enabled FROM courses c JOIN users u ON ".
+            "(c.teacher_id = u.user_id AND u.is_teacher = 1 AND c.enabled = 1) JOIN rooms r ON ".
+            "(c.room_id = r.id) WHERE (SELECT COUNT(*) AS count FROM join_course jc WHERE jc.course_id = c.course_id AND server_id IS NOT NULL) > 0 ORDER BY c.course_id"
         );
         $result = $query->execute();
         return $result;
@@ -33,10 +45,27 @@ class Course extends Model
             "SELECT u.user_id, u.name, u.student_id, jc.course_id, c.name AS course_name, t.name AS teacher_name, IFNULL(jc.server_id, 'NULL') AS server_id ".
             "FROM users u JOIN join_course jc ON (u.user_id = jc.user_id) ".
             "JOIN courses c ON (jc.course_id = c.course_id) JOIN (SELECT user_id, name FROM users WHERE is_teacher = 1) t ON(c.teacher_id = t.user_id)".
-            "ORDER BY jc.course_id DESC"
+            "ORDER BY jc.course_id DESC, jc.server_id DESC"
         );
         $result = $query->execute();
         return $result->as_array();
+    }
+
+    /**
+     * コースに所属しているユーザリスト
+     * @param $course_id
+     * @return mixed
+     */
+    public static function find_course_user_list($course_id)
+    {
+        $sql = "SELECT u.user_id, u.name, u.student_id, jc.server_id " .
+            "FROM users u JOIN join_course jc ON (u.user_id = jc.user_id AND jc.course_id = :course_id AND jc.server_id IS NOT NULL) " .
+            "ORDER BY jc.server_id DESC, u.user_id DESC";
+        $query = DB::query($sql);
+        $query->parameters(array(
+            'course_id' => &$course_id
+        ));
+        return $query->execute();
     }
 
     /**
@@ -101,5 +130,21 @@ class Course extends Model
         $query->columns(array('course_id', 'user_id'));
 
         return $query->values(array($course_id, $user_id))->execute();
+    }
+
+    /**
+     * サーバを登録する
+     */
+    public static function add_server($user_id, $course_id, $server_id)
+    {
+        $query = DB::query('UPDATE join_course SET server_id = :server_id WHERE user_id = :user_id AND course_id = :course_id');
+        $query->parameters(
+            array(
+                'server_id' => $server_id,
+                'user_id'   => $user_id,
+                'course_id' => $course_id
+            )
+        );
+        return $query->execute();
     }
 } 

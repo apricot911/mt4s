@@ -17,23 +17,23 @@
             </div>
             <div class="row">
                 <div class="col-xs-8 col-xs-offset-2">
-                    <form action="" class="form-horizontal">
+                    <form action="/admin/config" method="post" class="form-horizontal" name="config" autocomplete="off">
                         <div class="form-group">
                             <label for="" class="control-label col-xs-4">名前</label>
                             <div class="col-xs-8">
-                                <input type="text" class="form-control">
+                                <input name="user_name" type="text" class="form-control" value="<?php echo $user_name; ?>" autocomplete="off">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="" class="control-label col-xs-4">学籍番号</label>
                             <div class="col-xs-8">
-                                <input type="text" class="form-control">
+                                <input name="student_id" type="text" class="form-control" value="<?php echo $student_id; ?>" autocomplete="off">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="" class="control-label col-xs-4">パスワード</label>
                             <div class="col-xs-8">
-                                <input type="text" class="form-control">
+                                <input name="password" type="password" class="form-control" autocomplete="off">
                             </div>
                         </div>
                         <div class="form-group text-right">
