@@ -47,9 +47,12 @@ class Controller_Admin extends Controller_Template{
         $this->template->content = $view;
     }
 
-    public function action_instance()
+    public function action_instance($course_id, $user_id)
     {
-        $this->template->content = View::forge('admin/instance');
+        $view = View::forge('admin/instance');
+        echo $course_id;
+        echo $user_id;
+        $this->template->content = $view;
     }
 
     public function action_network()

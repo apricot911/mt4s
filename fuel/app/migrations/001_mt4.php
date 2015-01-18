@@ -9,6 +9,7 @@
 namespace Fuel\migrations;
 
 
+use Fuel\Core\DB;
 use Fuel\Core\DBUtil;
 
 class mt4
@@ -30,6 +31,7 @@ class mt4
                 'name'      => array('type' => 'varchar', 'constraint' => 255),
                 'teacher_id'=> array('type' => 'varchar', 'constraint' => 64),
                 'room_id'   => array('type' => 'varchar', 'constraint' => 5),
+                'regist_date'   => array('type' => 'timestamp',  'default'   => DB::expr('CURRENT_TIMESTAMP')),
                 'enabled'   => array('type' => 'tinyint', 'constraint' => 1,    'default' => 1)
             ),
             array('course_id'));
@@ -48,6 +50,8 @@ class mt4
 
     function down()
     {
+
+        DBUtil::drop_index('users', 'idx_student_id');
         DBUtil::drop_table('users');
         DBUtil::drop_table('courses');
         DBUtil::drop_table('rooms');

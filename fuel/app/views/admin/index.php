@@ -117,14 +117,14 @@
             </div>
             <div class="row">
                 <div class="col-xs-12 text-center" id="course_list">
-
+                    <p>データはありまてん</p>
                 </div>
             </div>
         </div>
     </div>
 </div>
 <script type="text/template" id="course_list_tmpl">
-    <div class="row" data-course_id="<%=course_id%>">
+    <div class="row course_row" data-course_id="<%=course_id%>">
         <div class="col-xs-12 text-center">
             <div class="row">
                 <div class="course">
@@ -138,7 +138,7 @@
     </div>
 </script>
 <script type="text/template" id="instance_tmpl">
-    <div class="col-xs-2" data-server_id="<%if(server_id != 'NULL'){print(server_id);}%>">
+    <div class="col-xs-2" data-user_id="<%=user_id%>" data-course_id="<%=course_id%>" data-server_id="<%if(server_id != 'NULL'){print(server_id);}%>">
         <div class="instance_box">
             <div>
                 <span class="status text-center glyphicon <%if(server_id == 'NULL'){print('glyphicon-minus');}else{print('glyphicon-refresh');}%>">
@@ -157,9 +157,10 @@
             instance_tmpl: _.template($('#instance_tmpl').html()),
             course_list: $('#course_list'),
             event_register: function(){
-                $('.instance_box').click(function(){
-
-                });
+                var self = this;
+//                setInterval(function(){
+//                    self.all_instance_status_check();
+//                }, 5000);
             },
             fetch_all_insntace_list: function(){
                 var self = this;
@@ -168,10 +169,14 @@
                     type: 'get'
                 }).done(function(data){
                     var instance_list = data;
+                    if(instance_list.length == 0){
+                        return;
+                    }
+                    var deferrs = [];
                     _(data).each(function(course_data){
                         var course_view = $(self.course_list_tmpl(course_data));
                         self.course_list.append(course_view);
-                        $.ajax({
+                        var defer = $.ajax({
                             url: '/api/instance/course_user_list.json',
                             type: 'get',
                             data: {
@@ -188,15 +193,22 @@
                                         $('.instance_box', this).addClass("select");
                                     }
                                 });
+                                instance_view.dblclick(function(){
+                                    location.href = '/admin/instance/'+instance_data.course_id+'/'+instance_data.user_id;
+                                });
                                 instance_list_view.append(instance_view);
                             });
+                        });
+                        deferrs.push(defer);
+                        $.when.apply(window, deferrs).always(function(){
+                            self.all_instance_status_check();
                         });
                     });
                 });
             },
             all_instance_status_check: function(){
                 var self = this;
-                var list = _($('[data-course_id]')).map(function(course_view){
+                var list = _($('.course_row[data-course_id]')).map(function(course_view){
                     return _($('[data-server_id*="-"]', course_view)).map(function(instance_view){
                         return $(instance_view).data('server_id');
                     });
@@ -223,7 +235,6 @@
                     dataType:'json',
                     data: JSON.stringify(send_data)
                 }).done(function(data){
-                    console.log(data);
                     var instance_view = $('[data-server_id="'+server_id+'"]');
                     if(data.server != null){
                         var name = data.server.name;

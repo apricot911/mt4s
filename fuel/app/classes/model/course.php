@@ -21,7 +21,7 @@ class Course extends Model
             "SELECT c.course_id AS course_id, c.name AS course_name, u.name AS teacher_name, r.name AS room_name, ".
             "c.enabled AS enabled FROM courses c JOIN users u ON ".
             "(c.teacher_id = u.user_id AND u.is_teacher = 1 AND c.enabled = 1) JOIN rooms r ON ".
-            "(c.room_id = r.id) ORDER BY c.course_id"
+            "(c.room_id = r.id) ORDER BY c.course_id DESC"
         );
         $result = $query->execute();
         return $result;
@@ -33,7 +33,7 @@ class Course extends Model
             "SELECT c.course_id AS course_id, c.name AS course_name, u.name AS teacher_name, r.name AS room_name, ".
             "c.enabled AS enabled FROM courses c JOIN users u ON ".
             "(c.teacher_id = u.user_id AND u.is_teacher = 1 AND c.enabled = 1) JOIN rooms r ON ".
-            "(c.room_id = r.id) WHERE (SELECT COUNT(*) AS count FROM join_course jc WHERE jc.course_id = c.course_id AND server_id IS NOT NULL) > 0 ORDER BY c.course_id"
+            "(c.room_id = r.id) WHERE (SELECT COUNT(*) AS count FROM join_course jc WHERE jc.course_id = c.course_id AND server_id IS NOT NULL) > 0 ORDER BY c.course_id DESC"
         );
         $result = $query->execute();
         return $result;
@@ -58,7 +58,7 @@ class Course extends Model
      */
     public static function find_course_user_list($course_id)
     {
-        $sql = "SELECT u.user_id, u.name, u.student_id, jc.server_id " .
+        $sql = "SELECT u.user_id, u.name, u.student_id, jc.server_id, jc.course_id " .
             "FROM users u JOIN join_course jc ON (u.user_id = jc.user_id AND jc.course_id = :course_id AND jc.server_id IS NOT NULL) " .
             "ORDER BY jc.server_id DESC, u.user_id DESC";
         $query = DB::query($sql);
