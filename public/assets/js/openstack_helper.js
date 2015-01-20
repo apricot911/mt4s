@@ -22,8 +22,8 @@ var openstack_helper = {
         });
     },
     create_instance: function(name, user_id, course_id){
-    var imageRef    = "02803367-771e-4c39-9a13-bbffb530f65f";
-    var flavorRef   = "2b128dfd-349f-4027-900f-8a2cea977828";
+    var imageRef    = "b0d4c4c6-d22d-4cc9-8b56-7b1c4897c494";
+    var flavorRef   = "fed212c2-7226-47af-b19b-4b43f2060539";
     var data = {
         server: {
             name: name,
@@ -32,7 +32,7 @@ var openstack_helper = {
             max_count: 1,
             min_count: 1,
             networks: [
-                {uuid: '780a30bd-9638-46ab-b349-055301973fc9'}
+                {uuid: '00a04ab7-265f-41cb-a798-7294be3d4b14'}
             ],
             security_groups:[
                 {name: 'default'}

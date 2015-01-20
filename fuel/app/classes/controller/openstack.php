@@ -8,7 +8,7 @@
 
 use Fuel\Core\Session;
 
-define("SERVER_ADDRESS", "133.242.238.61");
+define("SERVER_ADDRESS", "126.26.225.14");
 define("OPENSTACK_TENANT", "admin");
 define("OPENSTACK_TENANT_USER", "admin");
 define("OPENSTACK_TENANT_PASSWORD", "mysql");

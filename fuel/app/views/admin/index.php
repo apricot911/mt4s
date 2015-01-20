@@ -185,6 +185,7 @@
             course_list_tmpl: _.template($('#course_list_tmpl').html()),
             instance_tmpl: _.template($('#instance_tmpl').html()),
             course_list: $('#course_list'),
+            information: $('#information'),
             event_register: function(){
                 var self = this;
 //                setInterval(function(){
