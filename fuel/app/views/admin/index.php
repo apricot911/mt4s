@@ -254,18 +254,7 @@
                 });
             },
             instance_list_check1: function(server_id){
-                var send_data = {
-                    component:  'nova',
-                    path:       '/servers/'+server_id,
-                    method:     'get',
-                    data:       ""
-                };
-                return $.ajax({
-                    url: '/openstack/send_request.json',
-                    type: 'post',
-                    dataType:'json',
-                    data: JSON.stringify(send_data)
-                }).done(function(data){
+                return openstack_helper.check_instance(server_id).done(function(data){
                     var instance_view = $('[data-server_id="'+server_id+'"]');
                     if(data.server != null){
                         var name = data.server.name;

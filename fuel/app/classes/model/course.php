@@ -62,6 +62,18 @@ class Course extends Model
         return $result->as_array();
     }
 
+    public static function find_user_instance_list($user_id)
+    {
+        $sql = "SELECT u.user_id, u.name, c.name AS course_name, jc.server_id FROM " .
+            "users u JOIN join_course jc ON(u.user_id = jc.user_id) JOIN courses c ON (jc.course_id = c.course_id) " .
+            "WHERE u.user_id = :user_id AND jc.server_id IS NOT NULL";
+        $query = DB::query($sql);
+        $query->parameters(array(
+            'user_id'       =>  &$user_id
+        ));
+        return $query->execute();
+    }
+
     /**
      * コースに所属しているユーザリスト
      * @param $course_id

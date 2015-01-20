@@ -27,4 +27,10 @@ class Controller_Api_Instance extends Controller_Rest{
         $course_id = Input::get('course_id');
         return $this->response(Course::get_instance_list($course_id));
     }
+
+    public function get_user_instance_list()
+    {
+        $user_id = Input::get('user_id');
+        return $this->response(Course::find_user_instance_list($user_id));
+    }
 } 

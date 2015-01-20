@@ -51,6 +51,7 @@ class Controller_User extends Controller_Template
     public function action_index()
     {
         $view = View::forge('user/index');
+        $view->user_id = Auth::instance()->get_user_id();
         $this->template->content = $view;
     }
 

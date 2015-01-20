@@ -7,6 +7,20 @@ var openstack_helper = {
     fetchServerList: function(){
 
     },
+    check_instance: function(server_id){
+        var send_data = {
+            component:  'nova',
+            path:       '/servers/'+server_id,
+            method:     'get',
+            data:       ""
+        };
+        return $.ajax({
+            url: '/openstack/send_request.json',
+            type: 'post',
+            dataType:'json',
+            data: JSON.stringify(send_data)
+        });
+    },
     create_instance: function(name, user_id, course_id){
     var imageRef    = "02803367-771e-4c39-9a13-bbffb530f65f";
     var flavorRef   = "2b128dfd-349f-4027-900f-8a2cea977828";

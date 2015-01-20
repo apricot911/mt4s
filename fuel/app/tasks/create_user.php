@@ -20,7 +20,7 @@ class Create_User {
         DB::query("ALTER TABLE users AUTO_INCREMENT = 1")->execute();
         for($i = 0; $i < 4000; $i++){
             $id = str_pad($i, 4, "0" , STR_PAD_LEFT);
-            User::add_user('テストユーザ' . $id, 'b'. $id , 0);
+            User::add_user('テストユーザ' . $id, 'b'. $id , 0, "unko");
         }
 
         DB::update('users')->set(array('is_teacher' => '1'))->where('user_id', '=', '10')->execute();
