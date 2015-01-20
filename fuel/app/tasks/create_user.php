@@ -29,7 +29,7 @@ class Create_User {
         DB::query("ALTER TABLE courses AUTO_INCREMENT = 1")->execute();
         $query = DB::insert('courses');
         $query->columns(array('name', 'teacher_id', 'room_id'));
-        $course_name = array("2-A たけし", "3-B たけし", "1-C たけし", "1-B たけし");
+        $course_name = array("1A サーバ構築", "1B サーバ構築", "2C Linux運用", "2A Linux運用");
 
         foreach($course_name as $i => $val){
             $query->values(array(

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <!--<canvas id="myChart" width="200" height="200"></canvas>-->
+
+    <div id="basic" class="kami-chart"></div>
+    <div id="transparent" class="kami-chart"></div>
+</body>
+<!--<script src="Chart.js"></script>-->
+
+<!-- kamiChart Request -->
+<script src="js/jquery-1.11.2.min.js"></script>
+<script src="js/linq.js"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['corechart','gauge'] }]}"></script>
+<script src="js/script.js"></script>
+<link href="css/style.css" rel="stylesheet">
+<!-- kamiChart Request End -->
+<script>
+    $(function(){
+        $("#basic").kamiChart(["Run/60/#f55","Stop/40/#b33"]);
+        $("#transparent").kamiChart(["Run/60/#f55","Stop/40/transparent"]);
+    });
+</script>
+
+
+<!-- (｡・ˇ_ˇ・｡) -->
+<link href='http://fonts.googleapis.com/css?family=Audiowide' rel='stylesheet' type='text/css'>
+<style>
+    .kami-chart {
+        font-family: 'Audiowide', cursive;
+    }
+    .kami-chart .tip {
+        font-size: 1.1em;
+        margin-top: -5%;
+    }
+</style>
+</html>

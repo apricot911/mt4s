@@ -45,10 +45,13 @@
     }
 
     #information {
-        height: 200px;
+        /*height: 200px;*/
         /*margin-top:10px;*/
         /*margin-bottom:10px;*/
-        background: #bce8f1;
+        /*background: #bce8f1;*/
+    }
+    #information .progress{
+        margin-top:140px;
     }
 
     #navigation {
@@ -73,22 +76,21 @@
     .course p {
         margin: 0;
     }
-
-    .chart {
-        /*position: relative;*/
-        display: inline-block;
-        /*width: 11;*/
-        /*height: 110px;*/
-        margin-top: 50px;
-        margin-bottom: 50px;
-        text-align: center;
-    }
-
-    .chart canvas {
+    .kami-chart {
+        width: 100%;
+        height: 180px; }
+    .kami-chart .tip {
         position: absolute;
-        top: 0;
-        left: 0;
-    }
+        top: 50%;
+        left: 50%;
+        width: 60%;
+        text-align: center;
+        display: block;
+        margin-left: -30%;
+        height: 15%;
+        margin-top: -7%;
+        font-size: 1.5em;
+        color: #666; }
 </style>
 <div class="container">
     <div class="row">
@@ -96,22 +98,46 @@
             <!-- Main -->
             <div class="row">
                 <div class="col-xs-12" id="information">
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <div id="instance_num" class="kami-chart col-xs-12"></div>
+                            <div class="col-xs-12 text-center">CPUの使用数</div>
+                        </div>
+                        <div class="col-xs-4">
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="16.99" aria-valuemin="0" aria-valuemax="100" style="width: 16.99%;">
+                                    Used 17%
+                                </div>
+                                <div class="progress-bar" style="width: 83.01%">
+                                    <span>free 83%</span>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 text-center">
+                                メモリ使用率
+                            </div>
+                        </div>
+                        <div class="col-xs-4">
+                            <h5>Nova Compute Hosts</h5>
+                            <ul>
+                                <li> mt4</li>
+                            </ul>
+                        </div>
+                    </div>
 
-                    info
                 </div>
             </div>
             <div class="row">
                 <div class="col-xs-12" id="navigation">
                     <div class="row text-center">
-                        <div class="col-xs-1 col-xs-offset-9">
+                        <div class="col-xs-1 col-xs-offset-10">
                             <button class="btn btn-default">起動</button>
                         </div>
                         <div class="col-xs-1">
                             <button class="btn btn-danger">停止</button>
                         </div>
-                        <div class="col-xs-1">
-                            <button class="btn btn-info">詳細</button>
-                        </div>
+<!--                        <div class="col-xs-1">-->
+<!--                            <button class="btn btn-info">詳細</button>-->
+<!--                        </div>-->
                     </div>
                 </div>
             </div>
@@ -150,6 +176,9 @@
         </div>
     </div>
 </script>
+<script src="<?php echo Asset::get_file('linq.min.js', 'plugins', 'kamichart/js');?>"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['corechart','gauge'] }]}"></script>
+<script src="<?php echo Asset::get_file('script.js', 'plugins', 'kamichart/js');?>"></script>
 <script type="text/javascript">
     $(function(){
         var mt4 = {
@@ -161,6 +190,7 @@
 //                setInterval(function(){
 //                    self.all_instance_status_check();
 //                }, 5000);
+                $('#instance_num').kamiChart(["Used/1/#f55","Free/8/transparent"]);
             },
             fetch_all_insntace_list: function(){
                 var self = this;
@@ -175,6 +205,7 @@
                     var deferrs = [];
                     _(data).each(function(course_data){
                         var course_view = $(self.course_list_tmpl(course_data));
+                        self.course_list.empty();
                         self.course_list.append(course_view);
                         var defer = $.ajax({
                             url: '/api/instance/course_user_list.json',
@@ -301,61 +332,7 @@
             }
         };
 
-        function create_instance(name, user_id, course_id){
-            var imageRef    = "02803367-771e-4c39-9a13-bbffb530f65f";
-            var flavorRef   = "2b128dfd-349f-4027-900f-8a2cea977828";
-            var data = {
-                server: {
-                    name: name,
-                    imageRef: imageRef,
-                    flavorRef: flavorRef,
-                    max_count: 1,
-                    min_count: 1,
-                    networks: [
-                        {uuid: '780a30bd-9638-46ab-b349-055301973fc9'}
-                    ],
-                    security_groups:[
-                        {name: 'default'}
-                    ]
-                }
-            };
-            var sendData =  {
-                component: "nova",
-                path: "/servers",
-                method: "post",
-                data: data
-            };
-
-            $.ajax({
-                url: '/openstack/send_request.json',
-                type: 'post',
-                dataType: 'json',
-                data: JSON.stringify(sendData)
-
-            }).done(function(data){
-                console.log(data);
-                //save
-                if(data.server != null){//成功
-                    var data = {
-                        user_id: user_id,
-                        course_id: course_id,
-                        server_id: data.server.id
-                    };
-                    $.ajax({
-                        url: '/api/course/add_server.json',
-                        type: 'post',
-                        data: JSON.stringify(data)
-                    }).done(function(data){
-                        if(data == 1){
-                            //ok
-                        }
-                    });
-                }else{
-                    //error
-                }
-            });
-        }
-        window.create_instance = create_instance;
+//        window.create_instance = create_instance;
         mt4.start();
         window.mt4 = mt4;
     });

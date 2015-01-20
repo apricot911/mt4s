@@ -33,7 +33,30 @@
             </div>
             <div class="row">
                 <div class="col-xs-6">
-
+                    <div class="row">
+                        <div class="col-xs-6"><p class="lead">インスタンスリスト</p></div>
+                        <div class="col-xs-3">
+                            <div class="btn btn-primary" id="create_instance_list">一括生成</div>
+                        </div>
+                        <div class="col-xs-3">
+                            <div class="btn btn-danger" id="delete_instance">削除</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <table id="instance_list" class="table">
+                            <thead>
+                                <tr>
+                                    <td><input type="checkbox" class="all_check"></td>
+                                    <td>学籍番号</td>
+                                    <td>名前</td>
+                                    <td>ステータス</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <td class="text-center" colspan="4">NO DATA</td>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <div class="col-xs-6">
                     <div class="row">
@@ -121,6 +144,14 @@
         </div>
     </div>
 </div>
+<script type="text/template" id="instance_list_tmpl">
+    <tr data-user_id="<%=user_id%>" data-server_id="<%=server_id%>">
+        <td><input type="checkbox" value="<%=user_id%>" data-student_id="<%=student_id%>"></td>
+        <td><%=student_id%></td>
+        <td><%=name%></td>
+        <td><%if(server_id == 'NULL'){print('未生成');}else{print(server_id);}%></td>
+    </tr>
+</script>
 <script type="text/template" id="user_list_tmpl">
     <tr data-student_id="<%=student_id%>">
         <td class="col-xs-1">
@@ -142,7 +173,9 @@
             course_id: <?php echo $course['course_id'] ?>,
             user_list_table: $('#user_list'),
             delete_student_btn: $('#delete_student'),
+            instance_list_table: $('#instance_list'),
             user_list_tmpl: _.template($('#user_list_tmpl').html()),
+            instance_list_tmpl: _.template($('#instance_list_tmpl').html()),
             event_register: function(){
                 var self = this;
                 self.delete_student_btn.click(function(){
@@ -152,6 +185,16 @@
                     if(id_list.length > 0){
                         self.delete_user(self.course_id, id_list);
                     }
+                });
+                $('.all_check').change(function(){
+                    var checkbox = $(this);
+                    var is_check = checkbox.prop('checked');
+                    var table = checkbox.parents('table');
+                    $('tbody input[type="checkbox"]', table).prop('checked',is_check);
+                });
+
+                $('#create_instance_list').click(function(){
+                    self.create_instance();
                 });
             },
             fetch_user_list: function(){
@@ -166,6 +209,39 @@
                     _(data).each(function(d){
                         tbody.append($(self.user_list_tmpl(d)));
                     });
+                });
+            },
+            fetch_insntace_list: function(){
+                var self = this;
+                $('.all_check').prop('checked', false);
+                var tbody = $('tbody', self.instance_list_table);
+                $.ajax({
+                    type: 'get',
+                    url: '/api/instance/instance_list.json',
+                    data: {course_id: self.course_id}
+                }).done(function(data){
+                    if(data.length != 0){
+                        tbody.empty();
+                        _(data).each(function(d){
+                            tbody.append($(self.instance_list_tmpl(d)));
+                        });
+                    }
+                });
+            },
+            create_instance: function(){
+                var self = this;
+                var deferrs = [];
+                _($('tbody input[type="checkbox"]:checked', self.instance_list_table)).each(function(d){
+                    var user_id = $(d).val();
+                    var student_id = $(d).data('student_id');
+                    if($(d).parents('tr').data('server_id') == "NULL"){
+                        var name = student_id + '_' + user_id + '_' + new Date().getTime();
+                        var defer = openstack_helper.create_instance(name, user_id, self.course_id);
+                        deferrs.push(defer);
+                    }
+                });
+                $.when.apply(window,deferrs).always(function(){
+                    setTimeout(function(){self.fetch_insntace_list();}, 500);
                 });
             },
             delete_user: function(course_id, student_ids){
@@ -187,6 +263,12 @@
                         });
                     }
                 });
+            },
+            start: function(){
+                var self = this;
+                self.event_register();
+                self.fetch_user_list();
+                self.fetch_insntace_list();
             }
         };
 
@@ -223,12 +305,11 @@
                     }).done(function(){
                         $(node).val("");
                         mt4.fetch_user_list();
+                        mt4.fetch_insntace_list();
                     });
                 }
             }
         });
-        mt4.event_register();
-        mt4.fetch_user_list();
-
+        mt4.start();
     });
 </script>

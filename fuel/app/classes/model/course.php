@@ -27,6 +27,17 @@ class Course extends Model
         return $result;
     }
 
+    public static function get_instance_list($course_id)
+    {
+        $sql = "SELECT u.user_id, u.student_id, u.name, jc.course_id, IFNULL(jc.server_id, 'NULL') AS server_id FROM " .
+            "users u JOIN join_course jc ON (u.user_id = jc.user_id AND jc.course_id = :course_id) ORDER BY u.student_id";
+        $query = DB::query($sql);
+        $query->parameters(array(
+            'course_id' => &$course_id
+        ));
+        return $query->execute();
+    }
+
     public static function get_have_instance_course_list()
     {
         $query = DB::query(

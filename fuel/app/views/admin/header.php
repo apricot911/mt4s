@@ -26,12 +26,6 @@
             body{
                 padding-top:50px;
             }
-            #information{
-                height:200px;
-                /*margin-top:10px;*/
-                /*margin-bottom:10px;*/
-                background:#bce8f1;
-            }
             .navbar-custom{
                 position: fixed;
                 background-color: rgba(255, 255, 255, 0.9);
